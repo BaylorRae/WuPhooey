@@ -285,7 +285,7 @@ class WufooFields {
                 
                 // Part 2
                 $output .= '<span>';
-                  $output .= '<input id="' . $field->ID . '-2" name="' . $field->ID . '-2" type="text" size="4" maxlength="4" class="field text" />';
+                  $output .= '<input id="' . $field->ID . '-2" name="' . $field->ID . '-2" type="text" size="4" maxlength="4" class="field text last"" />';
                   $output .= '<label for="' . $field->ID . '-2">####</label>';
                 $output .= '</span>';
               break;
@@ -303,13 +303,13 @@ class WufooFields {
                   $output .= '<input id="' . $field->ID . '" name="' . $field->ID . '" type="text" size="10" class="field text currency" />';
                   $output .= '<label for="' . $field->ID . '">Dollars</label>';
                 $output .= '</span>';
-                $output .= '<span class="symbol">.</span>';
+                $output .= '<span class="symbol decimal">.</span>';
                 
                 // Cents
                 $output .= '<span>';
                   $output .= '<input id="' . $field->ID . '-1" name="' . $field->ID . '-1" type="text" size="2" maxlength="2" class="field text" />';
+                  $output .= '<label for="' . $field->ID . '-1">Cents</label>';
                 $output .= '</span>';
-                $output .= '<label for="' . $field->ID . '-1">Cents</label>';
                 
               break;
               
@@ -336,7 +336,7 @@ class WufooFields {
                 
                 // Year
                 $output .= '<span>';
-                  $output .= '<input id="' . $field->ID . '" name="' . $field->ID . '" type="text" size="4" maxlength="4" class="field text" />';
+                  $output .= '<input id="' . $field->ID . '" name="' . $field->ID . '" type="text" size="4" maxlength="4" class="field text year" />';
                   $output .= '<label for="' . $field->ID . '">YYYY</label>';
                 $output .= '</span>';
                break;
@@ -402,9 +402,9 @@ class WufooFields {
                         $output .= '<th><label for="' . $f->Label . '">' . $f->Label . '</label></th>';
                         
                         foreach ($field->Choices as $choice) {
-                          $output .= '<td><input id="' . $f->ID . '" name="' . $f->ID . '" type="radio" />' . $choice->Score . '</td>';
+                          $output .= '<td><input id="' . $f->ID . '" name="' . $f->ID . '" type="radio" />';
+                          $output .= '<span>' . $choice->Score . '</span></td>';
                         }
-                        
                         $output .= '</tr>';
                       }
                     $output .= '</tbody>';
