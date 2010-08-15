@@ -11,7 +11,6 @@ Author URI: http://baylorrae.com
 
 /*
   TODO Add the 'submit.php' so forms can be sent
-  TODO Finish the generic_form stylesheet
 */
 
 // Create the Menu
@@ -132,12 +131,14 @@ function wufoo_css($info) {
     color: #222;
   }
   
-  .wufoo.wrap a {
+  .wufoo.wrap a,
+  .wufoo.wrap .wufoo-phooey-form p a {
     color: #FFE16E;
     text-decoration: none;
   }
   
-  .wufoo.wrap a:hover {
+  .wufoo.wrap a:hover,
+  .wufoo.wrap .wufoo-phooey-form p a:hover {
     color: #ADD8E6;
   }
   
@@ -623,6 +624,9 @@ function wufoo_settings() {
   if( !get_option('wufoo_phooey-cache-users') )
     add_option('wufoo_phooey-cache-users', '1 month');
     
+  if( !get_option('wufoo_phooey-use-css') )
+    add_option('wufoo_phooey-use-css', 'true');
+    
 ?>
   
   <p>Wufoo Phooey needs your Wufoo API-Key and subdomain to get your forms.</p>
@@ -682,19 +686,37 @@ function wufoo_settings() {
             <input type="text" id="caching-users" name="wufoo_phooey-cache-users" class="regular-text" value="<?php echo get_option('wufoo_phooey-cache-users') ?>" />
           </td>
         </tr>
+                
+      </table> 
+      
+      <h3>Misc</h3>
+      <table class="form-table wufoo-phooey-form">
         
         <tr valign="top" class="form-field">
-          <th scope="row"><a class="button" href="<?php echo plugins_url('/clear_cache.php', __FILE__) ?>">Clear Cache</a></th>
-          <td><p style="color: #fff; text-shadow: 0 1px 0 #000">This will empty the cache folder. Clearing used disk space.</p></td>
+          <th scope="row" style="width: 20px;"></th>
+          <td>
+            <a class="button" href="<?php echo plugins_url('/clear_cache.php', __FILE__) ?>">Clear Cache</a>
+            <p style="color: #fff; text-shadow: 0 1px 0 #000">This will empty the cache folder. Clearing used disk space.</p>
+          </td>
         </tr>
         
-      </table> 
+        
+        <tr valign="top" class="form-field">
+          <th scope="row" style="width: 20px;"></th>
+          <td>
+            <input type="checkbox" style="display: inline; width: inherit;" id="wufoo_phooey-use-css" name="wufoo_phooey-use-css" <?php echo (get_option('wufoo_phooey-use-css')) ? 'checked="checked"' : '' ?> value="true" />
+            <label for="wufoo_phooey-use-css">Use Generic CSS</label>
+            <p style="color: #fff; text-shadow: 0 1px 0 #000; padding: 2px; margin: 0;">This will autoload a <a target="_blank" href="<?php echo plugins_url('/generic_form.css', __FILE__) ?>">generic stylesheet</a> for Wufoo Forms</p>
+          </td>
+        </tr>
+        
+      </table>
       
     </div>
     
     <input type="hidden" name="wufoo_phooey-secret_key" value="<?php echo time() ?>" />
     <input type="hidden" name="action" value="update" />
-    <input type="hidden" name="page_options" value="wufoo_phooey-api_key,wufoo_phooey-username,wufoo_phooey-secret_key,wufoo_phooey-cache-forms,wufoo_phooey-cache-entries,wufoo_phooey-cache-reports,wufoo_phooey-cache-users" />
+    <input type="hidden" name="page_options" value="wufoo_phooey-api_key,wufoo_phooey-username,wufoo_phooey-secret_key,wufoo_phooey-cache-forms,wufoo_phooey-cache-entries,wufoo_phooey-cache-reports,wufoo_phooey-cache-users,wufoo_phooey-use-css" />
     
     <p class="submit">
       <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /> &#8212;
@@ -1039,8 +1061,12 @@ function wufoo_entries() {
 }
 
 add_action('admin_head', 'wufoo_form_css');
+add_action('wp_head', 'wufoo_form_css');
 
 function wufoo_form_css() {
+  if( !get_option('wufoo_phooey-use-css') )
+    return;
+  
   echo '<link rel="stylesheet" href="' . plugins_url('/generic_form.css', __FILE__) . '" type="text/css" media="screen" title="no title" charset="utf-8" />';
 }
 
