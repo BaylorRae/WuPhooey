@@ -11,6 +11,7 @@ Author URI: http://baylorrae.com
 
 /*
   TODO Add the 'submit.php' so forms can be sent
+  TODO Finish the generic_form stylesheet
 */
 
 // Create the Menu
@@ -411,8 +412,8 @@ function wufoo_login() {
 /**
  * Converts an English Time to seconds "30 minutes" = "1800 seconds"
  *
- * @param string $time 
- * @return void
+ * @param string $time 1 hour 30 minutes
+ * @return $seconds
  * @author Baylor Rae'
  */
 function time2seconds($time) {
@@ -1037,7 +1038,11 @@ function wufoo_entries() {
   wufoo_footer();
 }
 
+add_action('admin_head', 'wufoo_form_css');
 
+function wufoo_form_css() {
+  echo '<link rel="stylesheet" href="' . plugins_url('/generic_form.css', __FILE__) . '" type="text/css" media="screen" title="no title" charset="utf-8" />';
+}
 
 function wufoo_add_entry() {
   wufoo_header('New Entry');

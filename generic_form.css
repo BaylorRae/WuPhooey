@@ -1,0 +1,66 @@
+form.wufoo_phooey-form .wufoo_form-info {
+  border-bottom: 1px dotted #fff;
+  padding: 0 0 15px;
+}
+
+form.wufoo_phooey-form ul li {
+  padding: 10px 0 0;
+}
+
+form.wufoo_phooey-form li > label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  cursor: default;
+}
+
+form.wufoo_phooey-form .req {
+  color: red;
+  margin-left: 3px;
+}
+
+/*
+  TEXT BOX
+*/
+form.wufoo_phooey-form .text.field {
+  width: 250px;
+}
+
+/*
+  TEXTAREA
+*/
+form.wufoo_phooey-form .textarea.field {
+  width: 500px;
+}
+
+/*
+  CHECKBOXES AND RADIOS
+*/
+form.wufoo_phooey-form .checkbox {
+  background: none;
+}
+
+form.wufoo_phooey-form .checkbox div span,
+form.wufoo_phooey-form .radio div span {
+  display: block;
+  margin-bottom: 8px;
+}
+
+form.wufoo_phooey-form .checkbox div label,
+form.wufoo_phooey-form .radio div label {
+  padding-left: 8px;
+}
+
+/*
+  SELECT BOXES
+*/
+form.wufoo_phooey-form .select.field {
+  width: 250px;
+}
+
+/*
+  SHORT NAME
+*/
+form.wufoo_phooey-form .shortname .text.field.fn {
+  width: 100px;
+}
