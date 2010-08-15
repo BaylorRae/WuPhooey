@@ -109,7 +109,7 @@ class WufooFields {
          if( in_array($field->ID, array('EntryId', 'CreatedBy', 'UpdatedBy', 'LastUpdated', 'DateCreated')) )
           continue;
                    
-         $output .= '<li>';
+         $output .= '<li class="' . $field->Type . '">';
           
           if( $field->Type != 'likert' ) {
             $output .= '<label class="desc" for="' . $field->ID . '">';
