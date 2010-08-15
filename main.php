@@ -624,7 +624,7 @@ function wufoo_settings() {
     
 ?>
   
-  <p>Wufoo Phooey needs your Wufoo API-Key and username to get your forms.</p>
+  <p>Wufoo Phooey needs your Wufoo API-Key and subdomain to get your forms.</p>
   <p>If you need help finding your Wufoo API-Key please see the Wufoo Docs on <a target="_blank" href="http://wufoo.com/docs/api/v3/#key" title="Wufoo Docs &middot; Finding Your Key">Finding Your Key</a>.</p>
   
   <form method="post" action="options.php">
