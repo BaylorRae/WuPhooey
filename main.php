@@ -799,8 +799,8 @@ function wufoo_forms() {
           <tr>
             <td><?php echo $id ?></td>
             <td class="form-name"><a target="_blank" href="http://<?php echo get_option('wufoo_phooey-username') ?>.wufoo.com/forms/<?php echo $form->Url ?>"><?php echo $form->Name ?></a></td>
-            <td class="form-description"><?php echo $form->Description ?></td>
-            <td class="form-email"><?php echo $form->Email ?></td>
+            <td class="form-description"><?php echo stripslashes($form->Description) ?></td>
+            <td class="form-email"><?php echo stripslashes($form->Email) ?></td>
             <td class="form-actions">
               <a href="<?php echo wufoo_link('forms') ?>&amp;entries=<?php echo $id ?>">Entries</a> (<?php echo $form->EntryCount; ?>) |
               <a target="_blank" href="http://<?php echo get_option('wufoo_phooey-username') ?>.wufoo.com/build/<?php echo $form->Url ?>">Edit on Wufoo!</a>
@@ -907,7 +907,7 @@ function wufoo_entries() {
           <tr>
             <?php 
               foreach ($fields as $field): ?>
-              <td rel="<?php echo $field['id'] ?>"><?php echo $entry->$field['id'] ?></td>
+              <td rel="<?php echo $field['id'] ?>"><?php echo stripslashes($entry->$field['id']) ?></td>
             <?php endforeach; ?>
           </tr>
           
