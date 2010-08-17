@@ -2,7 +2,7 @@
 /*
 Plugin Name: Wufoo phooey
 Plugin URI: http://github.com/BaylorRae/Wufoo-phooey
-Description: A complete Wufoo form manager
+Description: A Wufoo Form Manager for WordPress
 Version: 1.0
 Author: Baylor Rae'
 Author URI: http://baylorrae.com
