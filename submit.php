@@ -33,7 +33,7 @@
 <html lang="en">
 <head>
 <title>Wufoo Phooey - Form Submitter</title>
-<?php wufoo_form_css() ?>
+<link rel="stylesheet" href="<?php echo plugins_url('/generic_form.css', __FILE__) ?>" type="text/css" media="screen" title="no title" charset="utf-8" />
 <style>
   * { margin: 0; padding: 0; }
   

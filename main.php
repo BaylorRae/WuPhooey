@@ -10,7 +10,7 @@ Author URI: http://baylorrae.com
 */
 
 /*
-  TODO Add the 'submit.php' so forms can be sent
+  TODO Add reports if they are needed
 */
 
 // Create the Menu
@@ -28,9 +28,8 @@ function wufoo_navigation() {
   add_menu_page('Wufoo Phooey', 'Wufoo Phooey', 'manage_options', 'wufoo-phooey', 'wufoo_settings');
   add_submenu_page('wufoo-phooey', 'Settings &lsaquo; Wufoo Phooey', 'Settings', 'manage_options', 'wufoo-phooey');
   add_submenu_page('wufoo-phooey', 'Forms &lsaquo; Wufoo Phooey', 'Forms', 'manage_options', 'wufoo-phooey-forms', 'wufoo_forms');
-  // add_submenu_page('wufoo-phooey', 'Entries &lsaquo; Wufoo Phooey', 'Entries', 'manage_options', 'wufoo-phooey-entries', 'wufoo_entries');
-  add_submenu_page('wufoo-phooey', 'Reports &lsaquo; Wufoo Phooey', 'Reports', 'manage_options', 'wufoo-phooey-reports', 'wufoo_reports');
-  add_submenu_page('wufoo-phooey', 'Users &lsaquo; Wufoo Phooey', 'Users', 'manage_options', 'wufoo-phooey-users', 'wufoo_users');
+  // add_submenu_page('wufoo-phooey', 'Reports &lsaquo; Wufoo Phooey', 'Reports', 'manage_options', 'wufoo-phooey-reports', 'wufoo_reports');
+  add_submenu_page('wufoo-phooey', 'Help &lsaquo; Wufoo Phooey', 'Help', 'manage_options', 'wufoo-phooey-help', 'wufoo_help');
 
 }
 
@@ -337,6 +336,36 @@ function wufoo_css($info) {
   .fields a:active {
     background-color: #FFD64C;
   }
+  
+  .wufoo.wrap .help {
+    overflow: hidden;
+    width: 400px;
+    border-bottom: 1px dotted #fff;
+  }
+  
+  .wufoo.wrap .help img,
+  .wufoo.wrap .help p {
+    float: left;
+    display: inline-block;
+  }
+  
+  .wufoo.wrap .help p img {
+    margin-right: 5px;
+  }
+  
+  .wufoo.wrap .help code { color: #333; text-shadow: none; }
+  
+  .wufoo.wrap .help dl {}
+  .wufoo.wrap .help dt { padding-bottom: 3px; margin-bottom: 0; border-bottom: 1px solid #fff; }
+  .wufoo.wrap .help dd { margin-left: 15px; border-left: 1px solid #fff; padding: 4px; margin-bottom: 10px; }
+  .wufoo.wrap .help dd .default { display: block; margin-top: 3px; padding-top: 3px; }
+  .wufoo.wrap .help dd .default em { color: #ADD8E6; font-family: Courier; }
+  
+  .wufoo.wrap .help ul {
+    clear: both;
+    margin-left: 20px;
+    list-style: disc;
+  }
 </style>
 <?php
   }
@@ -474,7 +503,7 @@ function wufoo_message($subject) {
       
       $('<div />', {
         id: 'popup',
-        html: '<p>Wufoo phooey caches items every 30 minutes. This means your item might not show up for a while.</p><p>But don&#x27;t worry. You can</p><a class="button-primary" href="#" id="reload-cache">Reload the Cache</a>'
+        html: '<p>Wufoo phooey uses caching. This means your items might not show up for a while.</p><p>But don&#x27;t worry. You can</p><a class="button-primary" href="#" id="reload-cache">Reload the Cache</a>'
       })
         .prepend('<a id="close-message" href="#">X</a>')
         .appendTo($('.wufoo.wrap'));
@@ -574,9 +603,6 @@ function wufoo_settings() {
   if( !get_option('wufoo_phooey-cache-reports') )
     add_option('wufoo_phooey-cache-reports', '1 week');
     
-  if( !get_option('wufoo_phooey-cache-users') )
-    add_option('wufoo_phooey-cache-users', '1 month');
-    
   if( !get_option('wufoo_phooey-use-css') )
     add_option('wufoo_phooey-use-css', 'true');
     
@@ -632,13 +658,6 @@ function wufoo_settings() {
             <input type="text" id="caching-reports" name="wufoo_phooey-cache-reports" class="regular-text" value="<?php echo get_option('wufoo_phooey-cache-reports') ?>" />
           </td>
         </tr>
-        
-        <tr valign="top" class="form-field form-required">
-          <th scope="row"><label for="caching-users">Users</label></th>
-          <td>
-            <input type="text" id="caching-users" name="wufoo_phooey-cache-users" class="regular-text" value="<?php echo get_option('wufoo_phooey-cache-users') ?>" />
-          </td>
-        </tr>
                 
       </table> 
       
@@ -669,7 +688,7 @@ function wufoo_settings() {
     
     <input type="hidden" name="wufoo_phooey-secret_key" value="<?php echo time() ?>" />
     <input type="hidden" name="action" value="update" />
-    <input type="hidden" name="page_options" value="wufoo_phooey-api_key,wufoo_phooey-username,wufoo_phooey-secret_key,wufoo_phooey-cache-forms,wufoo_phooey-cache-entries,wufoo_phooey-cache-reports,wufoo_phooey-cache-users,wufoo_phooey-use-css" />
+    <input type="hidden" name="page_options" value="wufoo_phooey-api_key,wufoo_phooey-username,wufoo_phooey-secret_key,wufoo_phooey-cache-forms,wufoo_phooey-cache-entries,wufoo_phooey-cache-reports,wufoo_phooey-use-css" />
     
     <p class="submit">
       <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /> &#8212;
@@ -1031,12 +1050,122 @@ function wufoo_add_entry() {
       'cancel_location' => wufoo_link('forms') . '&entries=' . $_GET['entries']
     ));
 }
-function wufoo_reports() {}
-function wufoo_users() {
+
+function wufoo_reports() {
+  wufoo_header('Reports');
   
-  wufoo_header('Users');
-    
   wufoo_footer();
+}
+
+function wufoo_help() {
+  wufoo_header('Help');
+?>
   
+  <h3>Adding Forms to Your Posts/Pages</h3>
+  <div class="help">
+    <p>
+      <img src="<?php echo plugins_url('/images/help-1.jpg', __FILE__) ?>" width="128" height="78" alt="Help 1" />
+      When editing a post or page, click on the arrow next to the Wufoo icon and choose your form.
+    </p>
+  </div>
+  
+  <h3>Customizing the form</h3>
+  <div class="help">
+    <p>
+      There are a couple of options that you can use to customize your form.<br />
+      Usage:<br />
+      <code>[wufoo_phooey id=&quot;form_id&quot; option_name=&quot;option_value&quot;]</code>
+    </p>
+    
+    <h4 style="margin-bottom: 2px">Options</h4>
+    <dl>
+      
+      <dt>use_iframe ( true/false )</dt>
+      <dd>
+        This will load the Wufoo iFrame instead of rendering the form in HTML.
+        <span class="default">( defaults to: <em>false</em> )</span>
+      </dd>
+      
+      <dt>submit_class</dt>
+      <dd>
+        The class to add to the submit button
+        <span class="default">( defaults to: <em>button-primary</em> )</span>
+      </dd>
+      
+      <dt>cancel_link</dt>
+      <dd>
+        This will add a cancel link just after the submit button. It requires you to add <code>cancel_location</code>
+        <span class="default">( defaults to: <em>false</em> )</span>
+      </dd>
+      
+      <dt>cancel_location</dt>
+      <dd>
+        Where to go when the cancel link is clicked.
+        <span class="default">( only used with <em>cancel_link</em> )</span>
+      </dd>
+      
+      <dt>cancel_class</dt>
+      <dd>
+        The class to add to the cancel link
+        <span class="default">( defaults to <em>button</em> )</span>
+      </dd>
+      
+    </dl>
+  </div>
+  
+  <h3>About Cacheing</h3>
+  <div class="help">
+    <p>
+      Wufoo Phooey uses cacheing to ease the load on Wufoo. You can adjust how long different items are cached to suit your needs. If you want to change the cache time go to <code>Wufoo Phooey &gt; Settings</code> and under Advanced settings you'll see the options.
+    </p>
+    <p>
+      When changing the time, you can use these periods.<br />
+      You can even combine them!
+      <ul>
+        <li>Year</li>
+        <li>Month</li>
+        <li>Week</li>
+        <li>Day</li>
+        <li>Hour</li>
+        <li>Minute</li>
+        <li>Second</li>
+      </ul>
+    </p>
+  </div>
+  
+  <h3>Clearing the Cache</h3>
+  <div class="help">
+    <p>
+      In the settings page you may notice a button to clear the cache. Incase you're wondering, this will remove the files left on the server from the previous caches.
+    </p>
+    <p>
+      While these files won't take up a lot of space, it's just good house cleaning to remove those every once and a while.
+    </p>
+  </div>
+  
+  <h3>Using the Generic Stylesheet</h3>
+  <div class="help">
+    <p>
+      Wufoo Phooey comes with a basic stylesheet to style forms. You don't have to use it, but it acts as a good template to work from.
+    </p>
+  </div>
+  
+  <script>
+    var $ = jQuery;
+    $('.help').hide();
+    
+    $('.wufoo.wrap h3')
+      .css('cursor', 'pointer')
+      .click(function() {
+        // $(this).next().slideDown();
+        if( $(this).next().is(':visible') )
+          $(this).next().slideUp();
+        else
+          $(this).next().slideDown();
+      });
+  </script>
+  
+<?php  
+  wufoo_footer();
 }
 ?>
