@@ -36,31 +36,80 @@ function wufoo_navigation() {
 
 add_action('admin_head', 'wufoo_css');
 
-add_filter('the_content', 'wufoo_filter_post');
-
-function wufoo_filter_post($content) {
-  
-  if( preg_match('/<!--\swufoo_phooey\((\w+)(,.+)?\)\s-->/', $content, $matches) ) {
-    $form_id = $matches[1];
-    $params = explode(',', $matches[2]);
-    
-    $options = array();
-    if( is_array($params) ) {
-      foreach ($params as $value) {
-        if( !empty($value) ) {
-          $data = preg_match('/:(.+)\s?=\s?[\'"]?(.+)[\'"]?/', $value, $matches);
-          if( !empty($matches) )
-            $options[trim($matches[1])] = preg_replace('/\'/', '', $matches[2]);
-        }
-      }
-    }    
-    
-    $form = wufoo_build_form($form_id, $options);
-    $content = preg_replace('/<!--\swufoo_phooey\(.+\)\s-->/', $form, $content);
-  }
-  
-  return $content;
+function wufoo_filter_post($atts, $content = null) {
+  if( $atts['id'] )
+    return wufoo_build_form($atts['id'], $atts);
 }
+add_shortcode('wufoo_phooey', 'wufoo_filter_post');
+
+// function wufoo_filter_post($content) {
+//   
+//   if( preg_match('/<!--\swufoo_phooey\((\w+)(,.+)?\)\s-->/', $content, $matches) ) {
+//     $form_id = $matches[1];
+//     $params = explode(',', $matches[2]);
+//     
+//     $options = array();
+//     if( is_array($params) ) {
+//       foreach ($params as $value) {
+//         if( !empty($value) ) {
+//           $data = preg_match('/:(.+)\s?=\s?[\'"]?(.+)[\'"]?/', $value, $matches);
+//           if( !empty($matches) )
+//             $options[trim($matches[1])] = preg_replace('/\'/', '', $matches[2]);
+//         }
+//       }
+//     }    
+//     
+//     $form = wufoo_build_form($form_id, $options);
+//     $content = preg_replace('/<!--\swufoo_phooey\(.+\)\s-->/', $form, $content);
+//   }
+//   
+//   return $content;
+// }
+
+
+
+
+// ===================
+// = TinyMCE Buttons =
+// ===================
+
+function add_WufooPhooey_button() {
+   // Don't bother doing this stuff if the current user lacks permissions
+   if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+     return;
+ 
+   // Add only in Rich Editor mode
+   if ( get_user_option('rich_editing') == 'true') {
+     add_filter("mce_external_plugins", "add_WufooPhooey_tinymce_plugin");
+     add_filter('mce_buttons', 'register_WufooPhooey_button');
+   }
+}
+ 
+function register_WufooPhooey_button($buttons) {
+   array_push($buttons, "|", "wufoophooey");
+   return $buttons;
+}
+ 
+// Load the TinyMCE plugin : editor_plugin.js (wp2.5)
+function add_WufooPhooey_tinymce_plugin($plugin_array) {
+   $plugin_array['wufoophooey'] = plugins_url('/tinymce-plugin/WufooPhooey.php', __FILE__);
+   return $plugin_array;
+}
+ 
+function my_refresh_mce($ver) {
+  $ver += 3;
+  return $ver;
+}
+
+// init process for button control
+add_filter( 'tiny_mce_version', 'my_refresh_mce');
+add_action('init', 'add_WufooPhooey_button');
+
+
+
+// ============
+// = Template =
+// ============
 
 function wufoo_css($info) {
   
@@ -122,6 +171,8 @@ function wufoo_css($info) {
     color: #333;
     border: 1px solid #FFE364;
     -webkit-box-shadow: 0 10px 10px -10px #333;
+    -moz-box-shadow: 0 10px 10px -10px #333;
+    box-shadow: 0 10px 10px -10px #333;
     text-shadow: none;
   }
   
@@ -155,6 +206,8 @@ function wufoo_css($info) {
   
   .wufoo.wrap .button-primary:active {
     -webkit-box-shadow: inset 0 0 3px #333;
+    -moz-box-shadow: inset 0 0 3px #333;
+    box-shadow: inset 0 0 3px #333;
     color: #526E09;
     text-shadow: none;
   }
@@ -173,6 +226,8 @@ function wufoo_css($info) {
   
   .wufoo.wrap .button:active {
     -webkit-box-shadow: inset 0 0 2px #111;
+    -moz-box-shadow: inset 0 0 2px #111;
+    box-shadow: inset 0 0 2px #111;
     border: 1px solid #B1A770;
   }
   
@@ -225,6 +280,8 @@ function wufoo_css($info) {
     -moz-border-radius: 10px;
     border-radius: 10px;
     -webkit-box-shadow: 0 0 10px #555;
+    -moz-box-shadow: 0 0 10px #555;
+    box-shadow: 0 0 10px #555;
     text-align: center;
     text-shadow: none;
   }
@@ -372,10 +429,12 @@ function wufoo_link($page = null) {
   }
 }
 
-function wufoo_login() {
+function wufoo_login($echo = true) {
   
   if( !get_option('wufoo_phooey-api_key') || !get_option('wufoo_phooey-username') ) {
-    echo '<div id="wufoo-phooey-message" class="updated">Make sure you have filled in all the fields on the <a href="' . wufoo_link('settings') . '">Settings Page</a>.</div>';
+    if( $echo )
+      echo '<div id="wufoo-phooey-message" class="updated">Make sure you have filled in all the fields on the <a href="' . wufoo_link('settings') . '">Settings Page</a>.</div>';
+    
     return false;
   }else {
     $api_key = get_option('wufoo_phooey-api_key');
@@ -401,7 +460,9 @@ function wufoo_login() {
           'username' => $username
         ));
     } catch (Exception $e) {
-      echo '<div id="wufoo-phooey-message" class="updated">Make sure you have added the right API Key on the <a href="' . wufoo_link('settings') . '">Settings Page</a>.</div>';
+      if( $echo )
+        echo '<div id="wufoo-phooey-message" class="updated">Make sure you have added the right API Key on the <a href="' . wufoo_link('settings') . '">Settings Page</a>.</div>';
+      
       return false;
     }
     
@@ -410,106 +471,8 @@ function wufoo_login() {
   
 }
 
-/**
- * Converts an English Time to seconds "30 minutes" = "1800 seconds"
- *
- * @param string $time 1 hour 30 minutes
- * @return $seconds
- * @author Baylor Rae'
- */
-function time2seconds($time) {
-  preg_match_all('/(\d+ [a-z]+)/', $time, $matches);
-  $matches = $matches[0];
-  
-  $formats = array();
-  
-  foreach ($matches as $format) {
-    preg_match('/(\d+)\s?([a-z]+)/', $format, $f);
-    $time = $f[1];
-    $type = $f[2];
-    $formats[$type] = $time;
-  }
-  
-  $output = array(
-      'years' => 0,
-      'months' => 0,
-      'weeks' => 0,
-      'days' => 0,
-      'hours' => 0,
-      'minutes' => 0,
-      'seconds' => 0
-    );
-  
-  foreach ($formats as $format => $time) {
-    if( $time == 0 )
-      continue;
-    
-    switch ($format) {
-      case 'year' :
-      case 'years' :
-        $output['years'] = $time * 12 * 30 * 24 * 60 * 60;
-      break;
-      
-      
-      case 'month' :
-      case 'months' :
-        $output['months'] = $time * 30 * 24 * 60 * 60;
-      break;
-      
-      case 'week' :
-      case 'weeks' :
-        $ouput['weeks'] = $time * 7 * 24 * 60 * 60;
-      break;
-      
-      
-      case 'day' :
-      case 'days' :
-        $output['days'] = $time * 24 * 60 * 60;
-      break;
-      
-      
-      case 'hour' :
-      case 'hours' :
-        $output['hours'] = $time * 60 * 60;
-      break;
-      
-      
-      case 'minute' :
-      case 'minutes' :
-        $output['minutes'] = $time * 60;
-      break;
-      
-      
-      case 'second' :
-      case 'seconds' :
-        $output['seconds'] = $time;
-      break;
-    }
-    
-  }
-  
-  return $output['years'] + $output['months'] + $output['weeks'] + $output['days'] + $output['hours'] + $output['minutes'] + $output['seconds'];
-}
-
-// JG caching aliases
-function wufoo_cache_set($key, $data) {
-  global $wufoo_cache;
-  
-  $wufoo_cache->set($key, $data);
-  return $data;
-}
-
-function wufoo_cache_get($key, $expiration = 1800) {
-  global $wufoo_cache;
-    
-  if( preg_match('/forms/', $key) )
-    $expiration = time2seconds(get_option('wufoo_phooey-cache-forms', '30 minutes'));
-    
-  if( preg_match('/entries/', $key) || preg_match('/fields/', $key) )
-    $expiration = time2seconds(get_option('wufoo_phooey-cache-entries', '30 minutes'));
-          
-  return $wufoo_cache->get($key, $expiration);
-}
+// Used for cacheing
+include 'includes/caching.php';
 
 function wufoo_message($subject) {
   
@@ -562,14 +525,14 @@ function wufoo_message($subject) {
   
 }
 
-function wufoo_build_form($form, $options = null) {
+function wufoo_build_form($form, $options = null, $errors = null) {
   if( !$wrapper = wufoo_login() )
     return;
     
   $option = (is_array($options)) ? (object) $options : (object) array();
   
   if( isset($option->use_iframe) )
-    return '<script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src=\'" + host + "wufoo.com/scripts/embed/form.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">var ' . $form . ' = new WufooForm();' . $form . '.initialize({\'userName\':\'baylorrae\', \'formHash\':\'' . $form . '\', \'autoResize\':true,\'height\':\'514\'});z7x4a9.display();</script>';
+    return '<script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src=\'" + host + "wufoo.com/scripts/embed/form.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">var ' . $form . ' = new WufooForm();' . $form . '.initialize({\'userName\':\'baylorrae\', \'formHash\':\'' . $form . '\', \'autoResize\':true});' . $form . '.display();</script>';
     
   if( (!$data = wufoo_cache_get('fields-' . $form)) || isset($_GET['reload_cache']) ) {
     $data = array();
@@ -590,6 +553,16 @@ function wufoo_build_form($form, $options = null) {
     $fields = $data['fields'];
   
   $output = '<form name="' . $form . '" id="' . $form . '" class="wufoo_phooey-form ' . $form . '" autocomplete="off" enctype="multipart/form-data" method="post" action="' . plugins_url('/submit.php', __FILE__) . '">';
+  $output .= '<input type="hidden" name="form_id" value="' . $form . '" />';
+  
+  if( is_array($errors) ) {
+    
+    foreach( $errors as $field ) {
+      if( isset($fields->Fields[$field->ID]) )
+        $fields->Fields[$field->ID]->ErrorText = $field->ErrorText;
+    }
+    
+  }
   
   $output .= '<div class="wufoo_form-info"><h2>' . $info[$form]->Name . '</h2><div>' . $info[$form]->Description . '</div></div>';
   
@@ -608,7 +581,12 @@ function wufoo_build_form($form, $options = null) {
   return $output;
 }
 
-// Plugin Pages
+
+
+// ================
+// = Plugin Pages =
+// ================
+
 function wufoo_settings() {
   wufoo_header('Settings', 'Your settings have been saved!');
   

@@ -108,8 +108,12 @@ class WufooFields {
       
          if( in_array($field->ID, array('EntryId', 'CreatedBy', 'UpdatedBy', 'LastUpdated', 'DateCreated')) )
           continue;
-                   
-         $output .= '<li class="' . $field->Type . '">';
+        
+          $class = $field->Type;
+          if( isset($field->ErrorText) )
+            $class .= ' field-error';
+        
+         $output .= '<li class="' . $class .  '">';
           
           if( $field->Type != 'likert' ) {
             $output .= '<label class="desc" for="' . $field->ID . '">';
@@ -387,7 +391,10 @@ class WufooFields {
                 case 'likert' :
                   
                   $output .= '<table cellspacing="0" class="widefat">';
-                    $output .= '<caption id="' . $field->ID . '">' . $field->Title . '</caption>';
+                    $output .= '<caption id="' . $field->ID . '">' . $field->Title;
+                    if( $field->IsRequired )
+                      $output .= '<span class="req">*</span>';
+                    $output .= '</caption>';
                     
                     $output .= '<thead>';
                       $output .= '<th>&nbsp;</th>';
@@ -415,6 +422,9 @@ class WufooFields {
               
             }
           $output .= '</div>';
+          
+          if( isset($field->ErrorText) )
+            $output .= '<p class="field-error-text">' . $field->ErrorText . '</p>';
           
          $output .= '</li>';
          
