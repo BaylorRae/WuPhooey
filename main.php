@@ -13,9 +13,6 @@ Author URI: http://baylorrae.com
   TODO Add reports if they are needed
 */
 
-// Create the Menu
-add_action('admin_menu', 'wufoo_navigation');
-
 include 'wufoo-api/WufooApiWrapper.php';
 include 'WufooFields.php';
 include 'jg_cache.php';
@@ -23,6 +20,7 @@ include 'jg_cache.php';
 $wufoo_cache = new JG_Cache(dirname(__FILE__) . '/cache');
 
 
+// Creates the navigation links
 function wufoo_navigation() {
 
   add_menu_page('Wufoo Phooey', 'Wufoo Phooey', 'manage_options', 'wufoo-phooey', 'wufoo_settings');
@@ -32,7 +30,9 @@ function wufoo_navigation() {
   add_submenu_page('wufoo-phooey', 'Help &lsaquo; Wufoo Phooey', 'Help', 'manage_options', 'wufoo-phooey-help', 'wufoo_help');
 
 }
+add_action('admin_menu', 'wufoo_navigation');
 
+// Looks for the Wufoo Phooey shortcode
 function wufoo_filter_post($atts, $content = null) {
   if( $atts['id'] )
     return wufoo_build_form($atts['id'], $atts);
@@ -46,6 +46,8 @@ add_shortcode('wufoo_phooey', 'wufoo_filter_post');
 
 register_deactivation_hook(__FILE__, 'wufoo_deactivate');
 function wufoo_deactivate() {
+  
+  // Delete the options
   if( get_option('wufoo_phooey-use-css') )
     delete_option('wufoo_phooey-use-css');
     
@@ -66,7 +68,7 @@ function wufoo_deactivate() {
     
   $dir = dirname(__FILE__) . '/cache/*';
 
-  // Open a known directory, and proceed to read its contents  
+  // Clears the cache files
   foreach(glob($dir) as $file)   {  
     if( !preg_match('/index\.php/', $file) )
       unlink($file);
@@ -176,6 +178,7 @@ function wufoo_footer() {
   <?php
 }
 
+// Creates the URI to links inside of Wufoo Phooey
 function wufoo_link($page = null) {
   $blog = get_option('siteurl') . '/wp-admin/admin.php?page=';
   $page = (empty($page)) ? 'settings' : strtolower($page);
@@ -203,6 +206,7 @@ function wufoo_link($page = null) {
   }
 }
 
+// Creates the Wufoo API Wrapper
 function wufoo_login($echo = true) {
   
   if( !get_option('wufoo_phooey-api_key') || !get_option('wufoo_phooey-username') ) {
@@ -245,9 +249,10 @@ function wufoo_login($echo = true) {
   
 }
 
-// Used for cacheing
+// Functions for caching in Wufoo Phooey
 include 'includes/caching.php';
 
+// Loads common JS for Wufoo Phooey pages
 function wufoo_message($subject) {
   
   switch ($subject) {
@@ -299,6 +304,7 @@ function wufoo_message($subject) {
   
 }
 
+// Builds the Wufoo form in HTML or loads the iframe
 function wufoo_build_form($form, $options = null, $errors = null) {
   if( !$wrapper = wufoo_login() )
     return;
@@ -850,6 +856,7 @@ function wufoo_entries() {
 add_action('admin_head', 'wufoo_form_css');
 add_action('wp_head', 'wufoo_form_css');
 
+// Includes the generic stylesheet
 function wufoo_form_css() {
   if( !get_option('wufoo_phooey-use-css') )
     return;
