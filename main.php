@@ -42,31 +42,6 @@ function wufoo_filter_post($atts, $content = null) {
 }
 add_shortcode('wufoo_phooey', 'wufoo_filter_post');
 
-// function wufoo_filter_post($content) {
-//   
-//   if( preg_match('/<!--\swufoo_phooey\((\w+)(,.+)?\)\s-->/', $content, $matches) ) {
-//     $form_id = $matches[1];
-//     $params = explode(',', $matches[2]);
-//     
-//     $options = array();
-//     if( is_array($params) ) {
-//       foreach ($params as $value) {
-//         if( !empty($value) ) {
-//           $data = preg_match('/:(.+)\s?=\s?[\'"]?(.+)[\'"]?/', $value, $matches);
-//           if( !empty($matches) )
-//             $options[trim($matches[1])] = preg_replace('/\'/', '', $matches[2]);
-//         }
-//       }
-//     }    
-//     
-//     $form = wufoo_build_form($form_id, $options);
-//     $content = preg_replace('/<!--\swufoo_phooey\(.+\)\s-->/', $form, $content);
-//   }
-//   
-//   return $content;
-// }
-
-
 
 
 // ===================
