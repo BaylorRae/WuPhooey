@@ -11,6 +11,8 @@ Author URI: http://baylorrae.com
 
 /*
   TODO Add reports if they are needed
+  TODO Make it so entries can be clicked on
+  TODO Remove slashes in entries, and forms
 */
 
 // Create the Menu
@@ -32,8 +34,6 @@ function wufoo_navigation() {
   add_submenu_page('wufoo-phooey', 'Help &lsaquo; Wufoo Phooey', 'Help', 'manage_options', 'wufoo-phooey-help', 'wufoo_help');
 
 }
-
-add_action('admin_head', 'wufoo_css');
 
 function wufoo_filter_post($atts, $content = null) {
   if( $atts['id'] )
@@ -79,12 +79,22 @@ function my_refresh_mce($ver) {
 add_filter( 'tiny_mce_version', 'my_refresh_mce');
 add_action('init', 'add_WufooPhooey_button');
 
+// Adds the HTML view button
+add_action('admin_head', 'add_WufooPhooey_html_button');
+function add_WufooPhooey_html_button() {
+?>
+  <script>
+    edButtons[edButtons.length] = new edButton('ed_strong', 'Wufoo Form', '[wufoo_phooey id=""]', '', '', -1);
+  </script>
+<?php
+}
 
 
 // ============
 // = Template =
 // ============
 
+add_action('admin_head', 'wufoo_css');
 function wufoo_css($info) {
   
   if( isset($_GET['page']) ) {
@@ -214,7 +224,7 @@ function wufoo_css($info) {
     width: 30%;
   }
   .wufoo.wrap table .form-description {
-    width: 30%;
+    width: 25%;
   }  
   .wufoo.wrap table .form-actions {
     width: 20%;
@@ -600,8 +610,8 @@ function wufoo_settings() {
   if( !get_option('wufoo_phooey-cache-entries') )
     add_option('wufoo_phooey-cache-entries', '30 minutes');
     
-  if( !get_option('wufoo_phooey-cache-reports') )
-    add_option('wufoo_phooey-cache-reports', '1 week');
+  // if( !get_option('wufoo_phooey-cache-reports') )
+  //   add_option('wufoo_phooey-cache-reports', '1 week');
     
   if( !get_option('wufoo_phooey-use-css') )
     add_option('wufoo_phooey-use-css', 'true');
@@ -652,12 +662,14 @@ function wufoo_settings() {
           </td>
         </tr>
         
+        <?php /* ?>
         <tr valign="top" class="form-field form-required">
           <th scope="row"><label for="caching-reports">Reports</label></th>
           <td>
             <input type="text" id="caching-reports" name="wufoo_phooey-cache-reports" class="regular-text" value="<?php echo get_option('wufoo_phooey-cache-reports') ?>" />
           </td>
         </tr>
+        <?php */ ?>
                 
       </table> 
       
@@ -688,7 +700,7 @@ function wufoo_settings() {
     
     <input type="hidden" name="wufoo_phooey-secret_key" value="<?php echo time() ?>" />
     <input type="hidden" name="action" value="update" />
-    <input type="hidden" name="page_options" value="wufoo_phooey-api_key,wufoo_phooey-username,wufoo_phooey-secret_key,wufoo_phooey-cache-forms,wufoo_phooey-cache-entries,wufoo_phooey-cache-reports,wufoo_phooey-use-css" />
+    <input type="hidden" name="page_options" value="wufoo_phooey-api_key,wufoo_phooey-username,wufoo_phooey-secret_key,wufoo_phooey-cache-forms,wufoo_phooey-cache-entries<?php /* ,wufoo_phooey-cache-reports */ ?>,wufoo_phooey-use-css" />
     
     <p class="submit">
       <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /> &#8212;
@@ -772,6 +784,7 @@ function wufoo_forms() {
   <table class="widefat list">
     <thead>
       <tr>
+        <th>Form ID</th>
         <th class="form-name">Form Name</th>
         <th class="form-description">Description</th>
         <th class="form-email">Email</th>
@@ -784,6 +797,7 @@ function wufoo_forms() {
       <?php if( is_array($forms) ) : ?>
         <?php foreach( $forms as $id => $form ) : ?>
           <tr>
+            <td><?php echo $id ?></td>
             <td class="form-name"><a target="_blank" href="http://<?php echo get_option('wufoo_phooey-username') ?>.wufoo.com/forms/<?php echo $form->Url ?>"><?php echo $form->Name ?></a></td>
             <td class="form-description"><?php echo $form->Description ?></td>
             <td class="form-email"><?php echo $form->Email ?></td>
@@ -803,6 +817,7 @@ function wufoo_forms() {
     
     <tfoot>
       <tr>
+        <th>Form ID</th>
         <th class="form-name">Form Name</th>
         <th class="form-description">Description</th>
         <th class="form-email">Email</th>
@@ -1082,13 +1097,14 @@ function wufoo_help() {
       
       <dt>use_iframe ( true/false )</dt>
       <dd>
-        This will load the Wufoo iFrame instead of rendering the form in HTML.
+        This will load the Wufoo iFrame instead of rendering the form in HTML.<br />
+        If you use this, the options below won't be used.
         <span class="default">( defaults to: <em>false</em> )</span>
       </dd>
       
       <dt>submit_class</dt>
       <dd>
-        The class to add to the submit button
+        The class name to add to the submit button
         <span class="default">( defaults to: <em>button-primary</em> )</span>
       </dd>
       
@@ -1106,7 +1122,7 @@ function wufoo_help() {
       
       <dt>cancel_class</dt>
       <dd>
-        The class to add to the cancel link
+        The class name to add to the cancel link
         <span class="default">( defaults to <em>button</em> )</span>
       </dd>
       
@@ -1116,7 +1132,10 @@ function wufoo_help() {
   <h3>About Cacheing</h3>
   <div class="help">
     <p>
-      Wufoo Phooey uses cacheing to ease the load on Wufoo. You can adjust how long different items are cached to suit your needs. If you want to change the cache time go to <code>Wufoo Phooey &gt; Settings</code> and under Advanced settings you'll see the options.
+      Wufoo Phooey uses cacheing to ease the load on Wufoo. You can adjust how long different items are cached to suit your needs.
+    </p>
+    <p>
+      If you want to change the cache time go to <code>Wufoo Phooey &gt; Settings</code> and under Advanced settings you'll see the options.
     </p>
     <p>
       When changing the time, you can use these periods.<br />
@@ -1131,6 +1150,10 @@ function wufoo_help() {
         <li>Second</li>
       </ul>
     </p>
+    <p>
+      <h4>Example</h4>
+      <code>1 hour 30 minutes</code>
+    </p>
   </div>
   
   <h3>Clearing the Cache</h3>
@@ -1139,7 +1162,7 @@ function wufoo_help() {
       In the settings page you may notice a button to clear the cache. Incase you're wondering, this will remove the files left on the server from the previous caches.
     </p>
     <p>
-      While these files won't take up a lot of space, it's just good house cleaning to remove those every once and a while.
+      While these files won't take up a lot of space, it's just good house cleaning to remove those files every once and a while.
     </p>
   </div>
   
