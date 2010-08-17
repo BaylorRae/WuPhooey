@@ -11,8 +11,6 @@ Author URI: http://baylorrae.com
 
 /*
   TODO Add reports if they are needed
-  TODO Make it so entries can be clicked on
-  TODO Remove slashes in entries, and forms
 */
 
 // Create the Menu
@@ -41,6 +39,39 @@ function wufoo_filter_post($atts, $content = null) {
 }
 add_shortcode('wufoo_phooey', 'wufoo_filter_post');
 
+
+// ================
+// = Deactivation =
+// ================
+
+register_deactivation_hook(__FILE__, 'wufoo_deactivate');
+function wufoo_deactivate() {
+  if( get_option('wufoo_phooey-use-css') )
+    delete_option('wufoo_phooey-use-css');
+    
+  if( get_option('wufoo_phooey-cache-entries') )
+    delete_option('wufoo_phooey-cache-entries');
+    
+  if( get_option('wufoo_phooey-cache-forms') )
+    delete_option('wufoo_phooey-cache-forms');
+    
+  if( get_option('wufoo_phooey-api_key') )
+    delete_option('wufoo_phooey-api_key');
+  
+  if( get_option('wufoo_phooey-username') )
+    delete_option('wufoo_phooey-username');
+    
+  if( get_option('wufoo_phooey-secret_key') )
+    delete_option('wufoo_phooey-secret_key');
+    
+  $dir = dirname(__FILE__) . '/cache/*';
+
+  // Open a known directory, and proceed to read its contents  
+  foreach(glob($dir) as $file)   {  
+    if( !preg_match('/index\.php/', $file) )
+      unlink($file);
+  }
+}
 
 
 // ===================
@@ -82,6 +113,10 @@ add_action('init', 'add_WufooPhooey_button');
 // Adds the HTML view button
 add_action('admin_head', 'add_WufooPhooey_html_button');
 function add_WufooPhooey_html_button() {
+  
+  if( !$wrapper = wufoo_login($echo = false) )
+    return;
+  
 ?>
   <script>
     edButtons[edButtons.length] = new edButton('ed_strong', 'Wufoo Form', '[wufoo_phooey id=""]', '', '', -1);
@@ -101,283 +136,8 @@ function wufoo_css($info) {
     
     if( preg_match('/^wufoo-phooey/', $_GET['page']) == FALSE )
       return;
-    
-?>
-<style>
-  .large-font {
-    font-size: 19px;
-  }
-  
-  #wufoo-phooey-message.updated,
-  #wufoo-phooey-message.error {
-    padding: 5px;
-  }
-  
-  #wufoo-phooey-message a {
-    color: #333;
-    text-decoration: underline;
-  }
-  
-  .wufoo.wrap {
-    width: 800px;
-    background: #cb4408;
-    margin: 30px 15px;
-    padding: 10px;
-    color: #fff;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: 0 0 10px #333;
-    -moz-box-shadow: 0 0 10px #333;
-    box-shadow: 0 0 10px #333;
-    text-shadow: 0 1px 0 #333;
-    position: relative;
-  }
-  
-  .wufoo.wrap h2, .wufoo.wrap label {
-    color: #fff;
-    text-shadow: 0 1px 0 #333;
-  }
-  
-  #wufoo-phooey-title {
-    background: url(<?php echo plugins_url('/images/wufoo-phooey.png', __FILE__) ?>) no-repeat;
-    height: 40px;
-    padding-left: 241px;
-  }
-  
-  .wufoo.wrap .description {
-    color: #ADD8E6;
-  }
-    
-  .wufoo.wrap .updated,
-  .wufoo.wrap .error {
-    background: #F9DD67;
-    color: #333;
-    border: 1px solid #FFE364;
-    -webkit-box-shadow: 0 10px 10px -10px #333;
-    -moz-box-shadow: 0 10px 10px -10px #333;
-    box-shadow: 0 10px 10px -10px #333;
-    text-shadow: none;
-  }
-  
-  .wufoo.wrap .error {
-    background: #F9652F;
-    border: 1px solid #FF642D;
-    color: #222;
-  }
-  
-  .wufoo.wrap a,
-  .wufoo.wrap .wufoo-phooey-form p a {
-    color: #FFE16E;
-    text-decoration: none;
-  }
-  
-  .wufoo.wrap a:hover,
-  .wufoo.wrap .wufoo-phooey-form p a:hover {
-    color: #ADD8E6;
-  }
-  
-  .wufoo.wrap .button-primary {
-    background: #8EBC14;
-    border: 1px solid #6D910E;
-    color: #fff;
-  }
-  
-  .wufoo.wrap .button-primary:hover {
-    background: #95C613;
-    color: #EAF2FA;
-  }
-  
-  .wufoo.wrap .button-primary:active {
-    -webkit-box-shadow: inset 0 0 3px #333;
-    -moz-box-shadow: inset 0 0 3px #333;
-    box-shadow: inset 0 0 3px #333;
-    color: #526E09;
-    text-shadow: none;
-  }
-  
-  .wufoo.wrap .button {
-    background: #FFDA68;
-    border: 1px solid #FFF0A1;
-    text-shadow: none;
-    color: #464646;
-  }
-  
-  .wufoo.wrap .button:hover {
-    background: #FFEE91;
-    color: #000;
-  }
-  
-  .wufoo.wrap .button:active {
-    -webkit-box-shadow: inset 0 0 2px #111;
-    -moz-box-shadow: inset 0 0 2px #111;
-    box-shadow: inset 0 0 2px #111;
-    border: 1px solid #B1A770;
-  }
-  
-  .wufoo.wrap table td {
-    color: #333;
-    text-shadow: none;
-  }
-  
-  .wufoo.wrap table .form-name {
-    width: 30%;
-  }
-  .wufoo.wrap table .form-description {
-    width: 25%;
-  }  
-  .wufoo.wrap table .form-actions {
-    width: 20%;
-  }
-  
-  .wufoo.wrap table td a {
-    color: #21759B;
-  }
-  
-  .wufoo.wrap table td a:hover {
-    color: #D54E21;
-  }
-  
-  .wufoo.wrap table thead th,
-  .wufoo.wrap table tfoot th {
-    background: #B4D6FF;
-  }
-  
-  .wufoo.wrap table.list tbody tr:hover {
-    background: #FBFFC6;
-  }
-  
-  .wufoo.wrap table.entries tbody td {
-    border-right: 1px solid #dfdfdf;
-  }
-  
-  .wufoo.wrap #popup {
-    position: absolute;
-    width: 300px;
-    left: 50%;
-    margin-left: -150px;
-    top: 50px;
-    background: #FFE16E;
-    color: #333;
-    padding: 15px 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: 0 0 10px #555;
-    -moz-box-shadow: 0 0 10px #555;
-    box-shadow: 0 0 10px #555;
-    text-align: center;
-    text-shadow: none;
-  }
-  
-  .wufoo.wrap #popup #close-message {
-    font-family: Verdana;
-    position: absolute;
-    display: block;
-    left: -10px;
-    top: -10px;
-    color: #fff;
-    text-decoration: none;
-    background: #000;
-    padding: 0;
-    width: 19px;
-    height: 19px;
-    text-align: center;
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    -o-border-radius: 15px;
-    -ms-border-radius: 15px;
-    -khtml-border-radius: 15px;
-    border-radius: 15px;
-    border: 2px solid #fff;
-    -moz-box-shadow: rgba(0, 0, 0, 0.9) 0 0 4px 0;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.9) 0 0 4px 0;
-    -o-box-shadow: rgba(0, 0, 0, 0.9) 0 0 4px 0;
-    box-shadow: rgba(0, 0, 0, 0.9) 0 0 4px 0;
-  }
-  
-  .fields {
-    position: absolute;
-    right: 55px;
-    background: #fff;
-    width: 175px;
-    top: 50px;
-    border: 5px solid #95C613;
-    z-index: 100;
-    margin: 0;
-    padding: 8px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px 0;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px 0;
-    -o-box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px 0;
-    box-shadow: rgba(0, 0, 0, 0.4) 0 0 4px 0;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    border-radius: 15px;
-  }
-  
-  .fields li {
-    margin: 0;
-    padding: 0;
-  }
-  
-  .fields a {
-    color: #333 !important;
-    display: block;
-    padding: 7px 10px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    text-shadow: none;
-  }
-  
-  .fields .selected a {
-    background: url(<?php echo plugins_url('/images/check.png', __FILE__) ?>) no-repeat 150px center;
-  }
-  
-  .fields li:last-child a {
-    border: none;
-  }
-  
-  .fields a:hover {
-    color: #111 !important;
-    background-color: #FFE66B;
-  }
-  
-  .fields a:active {
-    background-color: #FFD64C;
-  }
-  
-  .wufoo.wrap .help {
-    overflow: hidden;
-    width: 400px;
-    border-bottom: 1px dotted #fff;
-  }
-  
-  .wufoo.wrap .help img,
-  .wufoo.wrap .help p {
-    float: left;
-    display: inline-block;
-  }
-  
-  .wufoo.wrap .help p img {
-    margin-right: 5px;
-  }
-  
-  .wufoo.wrap .help code { color: #333; text-shadow: none; }
-  
-  .wufoo.wrap .help dl {}
-  .wufoo.wrap .help dt { padding-bottom: 3px; margin-bottom: 0; border-bottom: 1px solid #fff; }
-  .wufoo.wrap .help dd { margin-left: 15px; border-left: 1px solid #fff; padding: 4px; margin-bottom: 10px; }
-  .wufoo.wrap .help dd .default { display: block; margin-top: 3px; padding-top: 3px; }
-  .wufoo.wrap .help dd .default em { color: #ADD8E6; font-family: Courier; }
-  
-  .wufoo.wrap .help ul {
-    clear: both;
-    margin-left: 20px;
-    list-style: disc;
-  }
-</style>
-<?php
+      
+    echo '<link rel="stylesheet" href="' . plugins_url('/wufoo_phooey.css', __FILE__) . '" type="text/css" media="screen" title="no title" charset="utf-8" />';
   }
 }
 
@@ -871,6 +631,29 @@ function wufoo_entries() {
     $WufooFields->set_fields($fields);
     
 ?>
+  <?php if( is_array($entries) ) : ?>
+    <h3>Click on an entry to see it</h3>
+    <div id="entry-viewer">
+      <?php foreach( $entries as $entry ) : ?>
+        <div class="entry" id="entry-<?php echo $entry->EntryId ?>">
+          <h2>Entry #<?php echo $entry->EntryId ?> <span class="date"><?php echo date('F j, Y',strtotime($entry->DateCreated)) ?></span> <span class="time">@ <?php echo date('g:i a',strtotime($entry->DateCreated)) ?></span></h2>
+          <a class="close" href="#">x</a>
+          <table class="widefat">
+            <tbody>
+              <?php foreach( $fields as $field ) : ?>
+                <?php if( !in_array($field['id'], array('EntryId', 'CreatedBy', 'UpdatedBy', 'LastUpdated', 'DateCreated')) ) : ?>
+                  <tr>
+                    <td class="field"><?php echo $field['title'] ?></td>
+                    <td class="value"><?php echo stripslashes($entry->$field['id']) ?></td>
+                  </tr>
+                <?php endif ?>
+              <?php endforeach ?>
+            </tbody>
+          </table>
+        </div>
+      <?php endforeach ?>
+    </div>
+  <?php endif ?>
   
   <p class="submit">
     <a class="button" href="<?php echo wufoo_link('forms') ?>">« Back</a>
@@ -904,7 +687,7 @@ function wufoo_entries() {
       <?php if( is_array($entries) ) : ?>
         <?php foreach( $entries as $entry ) : ?>
          
-          <tr>
+          <tr rel="<?php echo $entry->EntryId ?>">
             <?php 
               foreach ($fields as $field): ?>
               <td rel="<?php echo $field['id'] ?>"><?php echo stripslashes($entry->$field['id']) ?></td>
@@ -1037,6 +820,23 @@ function wufoo_entries() {
     });
     
     $('#no-entries').attr('colspan', fields_to_show.length + 1);
+    
+    $('#entry-viewer .entry').hide();
+    
+    $('table.entries tr')
+      .css('cursor', 'pointer')
+      .click(function() {
+        var $el = $('#entry-viewer #entry-' + $(this).attr('rel'));
+        if( $el.is(':visible') )
+          $el.slideUp();
+        else
+          $el.slideDown();
+      });
+      
+    $('#entry-viewer .close').click(function(e) {
+      $(this).parent().slideUp();
+      e.preventDefault();
+    });
     
   </script>
   
