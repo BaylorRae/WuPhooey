@@ -833,11 +833,7 @@ function wufoo_entries() {
     $('table.entries tr')
       .css('cursor', 'pointer')
       .click(function() {
-        var $el = $('#entry-viewer #entry-' + $(this).attr('rel'));
-        if( $el.is(':visible') )
-          $el.slideUp();
-        else
-          $el.slideDown();
+        $('#entry-viewer #entry-' + $(this).attr('rel')).slideToggle(300);
       });
       
     $('#entry-viewer .close').click(function(e) {
