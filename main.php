@@ -159,6 +159,7 @@ function wufoo_header($text = null, $update_message = null) {
 
 function wufoo_footer() {
   echo '</div> <!-- .wufoo.wrap -->';
+  echo '<a id="wufoo-link">Made For Wufoo</a>';
   ?>
     <script>
       jQuery('.disabled')

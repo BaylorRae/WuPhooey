@@ -301,3 +301,12 @@ html { height: 102%; }
   top: 20px;
   font-size: 15px;
 }
+
+#wufoo-link {
+  display: block;
+  width: 160px;
+  height: 107px;
+  text-indent: -9999px;
+  background: url(images/made-for-wufoo.png);
+  margin-left: 325px;
+}
