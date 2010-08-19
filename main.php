@@ -354,7 +354,8 @@ function wufoo_build_form($form, $options = null, $errors = null) {
   
   if( isset($option->cancel_link) && isset($option->cancel_location) ) {
     $cancel_class = (empty($option->cancel_class)) ? 'button' : $option->cancel_class;
-    $output .= ' <a class="' . $cancel_class . '" href="' . $option->cancel_location . '">Cancel</a>';
+    $cancel_text = (emptY($option->cancel_link)) ? 'Cancel' : $option->cancel_link;
+    $output .= ' <a class="' . $cancel_class . '" href="' . $option->cancel_location . '">' . $cancel_text . '</a>';
   }
   
   $output .= '</form>';
@@ -914,7 +915,9 @@ function wufoo_help() {
       
       <dt>cancel_link</dt>
       <dd>
-        This will add a cancel link just after the submit button. It requires you to add <code>cancel_location</code>
+        This will add a cancel link just after the submit button. It requires you to add <code>cancel_location</code><br />
+        You can add your own text for the cancel link
+        <code>cancel_link="New Cancel Text"</code>
         <span class="default">( defaults to: <em>false</em> )</span>
       </dd>
       
