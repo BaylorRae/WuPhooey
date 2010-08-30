@@ -312,7 +312,15 @@ function wufoo_build_form($form, $options = null, $errors = null) {
     
   $option = (is_array($options)) ? (object) $options : (object) array();
   
-  if( isset($option->use_iframe) )
+  /**
+   * Deleted the option to not use iframe
+   * My form builder had many bugs
+   *
+   * @author Baylor Rae'
+   * @version 1.1
+   */
+  
+  // if( isset($option->use_iframe) )
     return '<script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src=\'" + host + "wufoo.com/scripts/embed/form.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">var ' . $form . ' = new WufooForm();' . $form . '.initialize({\'userName\':\'baylorrae\', \'formHash\':\'' . $form . '\', \'autoResize\':true});' . $form . '.display();</script>';
     
   if( (!$data = wufoo_cache_get('fields-' . $form)) || isset($_GET['reload_cache']) ) {
@@ -889,6 +897,7 @@ function wufoo_help() {
     </p>
   </div>
   
+  <?php /*
   <h3>Customizing the form</h3>
   <div class="help">
     <p>
@@ -935,6 +944,7 @@ function wufoo_help() {
       
     </dl>
   </div>
+  */ ?>
   
   <h3>About Cacheing</h3>
   <div class="help">
