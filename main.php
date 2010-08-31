@@ -896,6 +896,11 @@ function wufoo_help() {
       <img src="<?php echo plugins_url('/images/help-1.jpg', __FILE__) ?>" width="128" height="78" alt="Help 1" />
       When editing a post or page, click on the arrow next to the Wufoo icon and choose your form.
     </p>
+    <p>
+      If you are using the HTML editor, you will need to add this tag.<br />
+      <code>[WuPhooey id=""]</code><br /><br />
+      And place the form id inside the quotes. You can find the form id in the <a href="<?php echo wufoo_link('forms') ?>">WuPhooey &gt; Forms</a> page.
+    </p>
   </div>
   
   <?php /*
@@ -953,7 +958,7 @@ function wufoo_help() {
       WuPhooey uses cacheing to ease the load on Wufoo. You can adjust how long different items are cached to suit your needs.
     </p>
     <p>
-      If you want to change the cache time go to <code>WuPhooey &gt; Settings</code> and under Advanced settings you'll see the options.
+      If you want to change the cache time go to <a href="<?php echo wufoo_link('settings') ?>">WuPhooey &gt; Settings</a> and under Advanced settings you'll see the options.
     </p>
     <p>
       When changing the time, you can use these periods.<br />
