@@ -92,10 +92,10 @@ function wufoo_cache_get($key, $expiration = 1800) {
   global $wufoo_cache;
     
   if( preg_match('/forms/', $key) )
-    $expiration = time2seconds(get_option('wufoo_phooey-cache-forms', '30 minutes'));
+    $expiration = time2seconds(get_option('WuPhooey-cache-forms', '30 minutes'));
     
   if( preg_match('/entries/', $key) || preg_match('/fields/', $key) )
-    $expiration = time2seconds(get_option('wufoo_phooey-cache-entries', '30 minutes'));
+    $expiration = time2seconds(get_option('WuPhooey-cache-entries', '30 minutes'));
           
   return $wufoo_cache->get($key, $expiration);
 }

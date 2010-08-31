@@ -18,7 +18,7 @@
   
   var plugin_url = null, _ed;
   
-	tinymce.create('tinymce.plugins.WufooPhooey', {
+	tinymce.create('tinymce.plugins.WuPhooey', {
 		init : function(ed, url) {
 		  plugin_url = url;
 		  _ed = ed;
@@ -26,12 +26,12 @@
 		
 		createControl : function(n, cm) {
       switch (n) {
-        case 'wufoophooey':
-        var c = cm.createSplitButton('wufoophooey', {
+        case 'WuPhooey':
+        var c = cm.createSplitButton('WuPhooey', {
           title : 'Wufoo Forms',
           image : plugin_url + '/button.gif',
           onclick : function() {
-            _ed.execCommand('mceInsertContent', false, '[wufoo_phooey id=""]');
+            _ed.execCommand('mceInsertContent', false, '[WuPhooey id=""]');
           }
         });
 
@@ -42,7 +42,7 @@
             foreach( $forms as $id => $form ) {
           ?>
           m.add({title : '<?php echo $form->Name ?>', onclick : function() {
-            _ed.execCommand('mceInsertContent', false, '[wufoo_phooey id="<?php echo $id ?>"]');
+            _ed.execCommand('mceInsertContent', false, '[WuPhooey id="<?php echo $id ?>"]');
           }});
           <?php
             }
@@ -59,7 +59,7 @@
 		
 		getInfo : function() {
 			return {
-				longname : "Wufoo Phooey",
+				longname : "WuPhooey",
 				author : "Baylor Rae'",
 				authorurl : 'http://baylorrae.com/',
 				infourl : 'http://baylorrae.com/',
@@ -67,5 +67,5 @@
 			};
 		}
 	});
-	tinymce.PluginManager.add('wufoophooey', tinymce.plugins.WufooPhooey);
+	tinymce.PluginManager.add('WuPhooey', tinymce.plugins.WuPhooey);
 })();

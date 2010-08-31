@@ -1,8 +1,8 @@
 <?php
 
-if( isset($_POST['wufoo_phooey-username']) && isset($_POST['wufoo_phooey-api_key']) ) {
-  $username = $_POST['wufoo_phooey-username'];
-  $api_key = $_POST['wufoo_phooey-api_key'];
+if( isset($_POST['WuPhooey-username']) && isset($_POST['WuPhooey-api_key']) ) {
+  $username = $_POST['WuPhooey-username'];
+  $api_key = $_POST['WuPhooey-api_key'];
   
   if( empty($username) || empty($api_key) )
     echo 'Failed!';

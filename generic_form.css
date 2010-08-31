@@ -1,6 +1,6 @@
 /*
   WUFOO GENERIC STYLESHEET
-  This stylesheet is part of the Wufoo Phooey plugin.
+  This stylesheet is part of the WuPhooey plugin.
   It is a "knock off" of the original Wufoo Form CSS.
   ---
   I recommend making a copy of this file before editing it.
@@ -9,36 +9,36 @@
   TODO Style the file field
 */
 
-form.wufoo_phooey-form .wufoo_form-info {
+form.WuPhooey-form .wufoo_form-info {
   border-bottom: 1px dotted #fff;
   padding: 0 0 15px;
 }
 
-form.wufoo_phooey-form > ul > li {
+form.WuPhooey-form > ul > li {
   padding: 10px;
   width: 520px;
   list-style: none;
   margin-bottom: 15px;
 }
 
-form.wufoo_phooey-form ul li.field-error {
+form.WuPhooey-form ul li.field-error {
   background: #FFD6D6;
 }
 
-form.wufoo_phooey-form li > label {
+form.WuPhooey-form li > label {
   font-weight: bold;
   margin-bottom: 5px;
   display: block;
   cursor: default;
 }
 
-form.wufoo_phooey-form .req {
+form.WuPhooey-form .req {
   color: red;
   margin-left: 3px;
   font-weight: normal;
 }
 
-form.wufoo_phooey-form .field-error-text {
+form.WuPhooey-form .field-error-text {
   display: block;
   color: red;
   clear: both;
@@ -48,114 +48,114 @@ form.wufoo_phooey-form .field-error-text {
 /*
   TEXT BOX
 */
-form.wufoo_phooey-form .text.field { width: 250px; }
+form.WuPhooey-form .text.field { width: 250px; }
 
 
 /*
   TEXTAREA
 */
-form.wufoo_phooey-form .textarea.field { width: 500px; }
+form.WuPhooey-form .textarea.field { width: 500px; }
 
 
 /*
   CHECKBOXES AND RADIOS
 */
-form.wufoo_phooey-form .checkbox { background: none; }
+form.WuPhooey-form .checkbox { background: none; }
 
-form.wufoo_phooey-form .checkbox div span,
-form.wufoo_phooey-form .radio div span { display: block; margin-bottom: 8px; }
+form.WuPhooey-form .checkbox div span,
+form.WuPhooey-form .radio div span { display: block; margin-bottom: 8px; }
 
-form.wufoo_phooey-form .checkbox div label,
-form.wufoo_phooey-form .radio div label { padding-left: 8px; }
+form.WuPhooey-form .checkbox div label,
+form.WuPhooey-form .radio div label { padding-left: 8px; }
 
 /*
   SELECT BOXES
 */
-form.wufoo_phooey-form .select.field { width: 250px; }
+form.WuPhooey-form .select.field { width: 250px; }
 
 /*
   SHORT NAME
 */
-form.wufoo_phooey-form .shortname { overflow: hidden; }
-form.wufoo_phooey-form .shortname div span { float: left; margin-right: 2px; }
-form.wufoo_phooey-form .shortname .text.field.fn { width: 75px; }
-form.wufoo_phooey-form .shortname .text.field.ln { width: 125px; }
+form.WuPhooey-form .shortname { overflow: hidden; }
+form.WuPhooey-form .shortname div span { float: left; margin-right: 2px; }
+form.WuPhooey-form .shortname .text.field.fn { width: 75px; }
+form.WuPhooey-form .shortname .text.field.ln { width: 125px; }
 
-form.wufoo_phooey-form .shortname label { display: block; }
+form.WuPhooey-form .shortname label { display: block; }
 
 /*
   ADDRESS
 */
-form.wufoo_phooey-form .address { overflow: hidden; width: 500px; }
-form.wufoo_phooey-form .address span { margin-bottom: 8px; }
+form.WuPhooey-form .address { overflow: hidden; width: 500px; }
+form.WuPhooey-form .address span { margin-bottom: 8px; }
 
-form.wufoo_phooey-form .address div span,
-form.wufoo_phooey-form .address .text.field,
-form.wufoo_phooey-form .address label { display: block; width: 235px; }
+form.WuPhooey-form .address div span,
+form.WuPhooey-form .address .text.field,
+form.WuPhooey-form .address label { display: block; width: 235px; }
 
-form.wufoo_phooey-form .address .full { display: block; }
-form.wufoo_phooey-form .address .full .text.field,
-form.wufoo_phooey-form .address .full label  { width: 500px; }
+form.WuPhooey-form .address .full { display: block; }
+form.WuPhooey-form .address .full .text.field,
+form.WuPhooey-form .address .full label  { width: 500px; }
 
-form.wufoo_phooey-form .address span { padding-right: 0; }
-form.wufoo_phooey-form .address .left { float: left; }
-form.wufoo_phooey-form .address .right { float: right; }
+form.WuPhooey-form .address span { padding-right: 0; }
+form.WuPhooey-form .address .left { float: left; }
+form.WuPhooey-form .address .right { float: right; }
 
-form.wufoo_phooey-form .address .select.field { width: 245px; }
+form.WuPhooey-form .address .select.field { width: 245px; }
 
 
 /*
   PHONE
 */
-form.wufoo_phooey-form .phone { overflow: hidden; }
-form.wufoo_phooey-form .phone > label { text-align: left; }
-form.wufoo_phooey-form .phone div span { float: left; }
-form.wufoo_phooey-form .phone .text.field { width: 35px; text-align: center; }
-form.wufoo_phooey-form .phone .text.field.last { width: 45px; }
-form.wufoo_phooey-form .phone span label { display: block; text-align: center; }
-form.wufoo_phooey-form .phone .symbol { padding: 4px; }
+form.WuPhooey-form .phone { overflow: hidden; }
+form.WuPhooey-form .phone > label { text-align: left; }
+form.WuPhooey-form .phone div span { float: left; }
+form.WuPhooey-form .phone .text.field { width: 35px; text-align: center; }
+form.WuPhooey-form .phone .text.field.last { width: 45px; }
+form.WuPhooey-form .phone span label { display: block; text-align: center; }
+form.WuPhooey-form .phone .symbol { padding: 4px; }
 
 
 /*
   PRICE
 */
-form.wufoo_phooey-form .money { overflow: hidden; }
-form.wufoo_phooey-form .money div span { float: left; }
-form.wufoo_phooey-form .money .text.field { width: 40px; }
-form.wufoo_phooey-form .money .text.field.currency { width: 75px; }
-form.wufoo_phooey-form .money span label { display: block; }
-form.wufoo_phooey-form .money .decimal.symbol { padding: 5px 5px 0 2px; }
-form.wufoo_phooey-form .money .symbol { font-size: 18px; padding: 5px 1px 0 0; }
+form.WuPhooey-form .money { overflow: hidden; }
+form.WuPhooey-form .money div span { float: left; }
+form.WuPhooey-form .money .text.field { width: 40px; }
+form.WuPhooey-form .money .text.field.currency { width: 75px; }
+form.WuPhooey-form .money span label { display: block; }
+form.WuPhooey-form .money .decimal.symbol { padding: 5px 5px 0 2px; }
+form.WuPhooey-form .money .symbol { font-size: 18px; padding: 5px 1px 0 0; }
 
 
 /*
   DATE / TIME
 */
-form.wufoo_phooey-form .date,
-form.wufoo_phooey-form .time { overflow: hidden; }
+form.WuPhooey-form .date,
+form.WuPhooey-form .time { overflow: hidden; }
 
-form.wufoo_phooey-form .date div span,
-form.wufoo_phooey-form .time div span { float: left; }
+form.WuPhooey-form .date div span,
+form.WuPhooey-form .time div span { float: left; }
 
-form.wufoo_phooey-form .date .text.field,
-form.wufoo_phooey-form .time .text.field { width: 35px; text-align: center; }
+form.WuPhooey-form .date .text.field,
+form.WuPhooey-form .time .text.field { width: 35px; text-align: center; }
 
-form.wufoo_phooey-form .date span label,
-form.wufoo_phooey-form .time span label { display: block; text-align: center; }
+form.WuPhooey-form .date span label,
+form.WuPhooey-form .time span label { display: block; text-align: center; }
 
-form.wufoo_phooey-form .date .text.field.year,
-form.wufoo_phooey-form .time .text.field.year { width: 45px; }
+form.WuPhooey-form .date .text.field.year,
+form.WuPhooey-form .time .text.field.year { width: 45px; }
 
-form.wufoo_phooey-form .date .symbol,
-form.wufoo_phooey-form .time .symbol { font-size: 13px; padding: 4px 2px; }
+form.WuPhooey-form .date .symbol,
+form.WuPhooey-form .time .symbol { font-size: 13px; padding: 4px 2px; }
 
-form.wufoo_phooey-form .time .select.field { width: 65px; margin-left: 8px; }
+form.WuPhooey-form .time .select.field { width: 65px; margin-left: 8px; }
 
 
 /*
   LIKERT
 */
-form.wufoo_phooey-form .likert caption { text-align: left; padding-bottom: 5px; }
-form.wufoo_phooey-form .likert label { color: #333; text-shadow: none; }
-form.wufoo_phooey-form .likert td { text-align: center; }
-form.wufoo_phooey-form .likert tbody span { display: block; }
+form.WuPhooey-form .likert caption { text-align: left; padding-bottom: 5px; }
+form.WuPhooey-form .likert label { color: #333; text-shadow: none; }
+form.WuPhooey-form .likert td { text-align: center; }
+form.WuPhooey-form .likert tbody span { display: block; }

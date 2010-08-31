@@ -32,7 +32,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Wufoo Phooey - Form Submitter</title>
+<title>WuPhooey - Form Submitter</title>
 <link rel="stylesheet" href="<?php echo plugins_url('/generic_form.css', __FILE__) ?>" type="text/css" media="screen" title="no title" charset="utf-8" />
 <style>
   * { margin: 0; padding: 0; }
@@ -114,17 +114,17 @@
     border: 1px solid #B1A770;
   }
   
-  .wufoo_phooey-form {
+  .WuPhooey-form {
     text-align: left;
   }
   
-  .wufoo_phooey-form table { border: 1px solid #aaa; border-bottom: none; border-right: none; }
-  .wufoo_phooey-form table th { font-weight: normal; }
-  .wufoo_phooey-form table thead th,
-  .wufoo_phooey-form table tbody th,
-  .wufoo_phooey-form table tbody td { background: #fff; border-bottom: 1px solid #aaa; border-right: 1px solid #aaa; padding: 4px 10px; }
+  .WuPhooey-form table { border: 1px solid #aaa; border-bottom: none; border-right: none; }
+  .WuPhooey-form table th { font-weight: normal; }
+  .WuPhooey-form table thead th,
+  .WuPhooey-form table tbody th,
+  .WuPhooey-form table tbody td { background: #fff; border-bottom: 1px solid #aaa; border-right: 1px solid #aaa; padding: 4px 10px; }
   
-  .wufoo_phooey-form table thead th { background: #eee; text-align: center; }
+  .WuPhooey-form table thead th { background: #eee; text-align: center; }
     
 </style>
 </head>

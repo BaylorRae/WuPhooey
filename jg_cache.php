@@ -15,16 +15,16 @@ class JG_Cache {
     
     /**
      * Creates the path the the cache file and hashes the name
-     * Modified by Baylor Rae' to work with Wufoo Phooey
+     * Modified by Baylor Rae' to work with WuPhooey
      *
      * @param string $key 
      * @return void
      * @author Jon Gales
      */
     private function _name($key) {
-        if( !$salt = get_option('wufoo_phooey-secret_key') ) {
+        if( !$salt = get_option('WuPhooey-secret_key') ) {
           $time = time();
-          add_option('wufoo_phooey-secret_key', $time);
+          add_option('WuPhooey-secret_key', $time);
           $salt = $time;
         }
         return sprintf("%s/%s", $this->dir, sha1($salt . $key));
