@@ -198,7 +198,7 @@ html { height: 102%; }
   background: #fff;
   width: 175px;
   top: 50px;
-  border: 5px solid #95C613;
+  border: 5px solid #FFD44D;
   z-index: 100;
   margin: 0;
   padding: 8px;
@@ -235,12 +235,12 @@ html { height: 102%; }
 }
 
 .fields a:hover {
-  color: #111 !important;
-  background-color: #FFE66B;
+  color: #fff !important;
+  background-color: #5B8DB2;
 }
 
 .fields a:active {
-  background-color: #FFD64C;
+  background-color: #1F537F;
 }
 
 .wufoo.wrap .help {
