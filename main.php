@@ -23,7 +23,7 @@ $wufoo_cache = new JG_Cache(dirname(__FILE__) . '/cache');
 // Creates the navigation links
 function wufoo_navigation() {
 
-  add_menu_page('WuPhooey', 'WuPhooey', 'manage_options', 'WuPhooey', 'wufoo_settings');
+  add_menu_page('WuPhooey', 'WuPhooey' . wufoo_count_entries(), 'manage_options', 'WuPhooey', 'wufoo_settings');
   add_submenu_page('WuPhooey', 'Settings &lsaquo; WuPhooey', 'Settings', 'manage_options', 'WuPhooey');
   add_submenu_page('WuPhooey', 'Forms &lsaquo; WuPhooey', 'Forms', 'manage_options', 'WuPhooey-Forms', 'wufoo_forms');
   // add_submenu_page('wuphooey', 'Reports &lsaquo; WuPhooey', 'Reports', 'manage_options', 'wuphooey-reports', 'wufoo_reports');
@@ -39,6 +39,10 @@ function wufoo_filter_post($atts, $content = null) {
 }
 add_shortcode('WuPhooey', 'wufoo_filter_post');
 
+
+function wufoo_count_entries() {
+  // return ' <span title="Today\'s Entries" class="WuPhooey-today_entries update-plugins"><span class="plugins-count">2</span></span>';
+}
 
 // ================
 // = Deactivation =
@@ -121,7 +125,7 @@ function add_WuPhooey_html_button() {
   
 ?>
   <script>
-    edButtons[edButtons.length] = new edButton('ed_strong', 'Wufoo Form', '[WuPhooey id=""]', '', '', -1);
+    edButtons[edButtons.length] = new edButton('ed_strong', 'WuPhooey', '[WuPhooey id=""]', '', '', -1);
   </script>
 <?php
 }

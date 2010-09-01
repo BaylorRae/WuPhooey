@@ -28,7 +28,7 @@
       switch (n) {
         case 'WuPhooey':
         var c = cm.createSplitButton('WuPhooey', {
-          title : 'Wufoo Forms',
+          title : 'WuPhooey',
           image : plugin_url + '/button.gif',
           onclick : function() {
             _ed.execCommand('mceInsertContent', false, '[WuPhooey id=""]');

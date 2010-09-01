@@ -310,3 +310,7 @@ html { height: 102%; }
   background: url(images/made-for-wufoo.png);
   margin-left: 335px;
 }
+
+.WuPhooey-today_entries.alot {
+  margin-left: 0 !important;
+}
