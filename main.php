@@ -39,7 +39,6 @@ function wufoo_filter_post($atts, $content = null) {
 }
 add_shortcode('WuPhooey', 'wufoo_filter_post');
 
-
 function wufoo_count_entries() {
   // return ' <span title="Today\'s Entries" class="WuPhooey-today_entries update-plugins"><span class="plugins-count">2</span></span>';
 }
@@ -393,8 +392,8 @@ function wufoo_settings() {
   // if( !get_option('WuPhooey-cache-reports') )
   //   add_option('WuPhooey-cache-reports', '1 week');
     
-  if( !get_option('WuPhooey-use-css') )
-    add_option('WuPhooey-use-css', 'true');
+  // if( !get_option('WuPhooey-use-css') )
+  //   add_option('WuPhooey-use-css', 'true');
     
 ?>
   
@@ -476,7 +475,7 @@ function wufoo_settings() {
         */ ?>
         
       </table>
-      
+            
     </div>
     
     <input type="hidden" name="WuPhooey-secret_key" value="<?php echo time() ?>" />
@@ -492,12 +491,22 @@ function wufoo_settings() {
     
   </form>
   
+  <script src="<?php echo plugins_url('/js/jquery.cookie.js', __FILE__) ?>"></script>
   <script>
     var $ = jQuery;
     var $test_btn = $('#wuphooey-test_info'),
         $message = $('#wuphooey-message'),
-        $spinner = $('#spinner').css('opacity', 0);
+        $spinner = $('#spinner').css('opacity', 0),
         
+        // Advanced options
+         $link = $('#toggle-adv-opts'),
+        advOpts_status = $.cookie('WuPhooey-Settings-adv_opts');
+    
+    if( !advOpts_status ) {
+      $.cookie('WuPhooey-Settings-adv_opts', 'closed');
+      advOpts_status = $.cookie('WuPhooey-Settings-adv_opts');
+    }
+    
     $test_btn.click(function() {
       
       $message.stop().animate({
@@ -520,17 +529,21 @@ function wufoo_settings() {
       
     });
     
-    $('#adv-opts').hide();
+    if( advOpts_status == 'closed' )
+      $('#adv-opts').hide();
+    else
+      $link.text('- Advanced Options');
     
-    $('#toggle-adv-opts').click(function(e) {
-      var $link = $(this);
+      $link.click(function(e) {
       
       if( $('#adv-opts').is(':visible') ) {
         $('#adv-opts').slideUp();
         $link.text('+ Advanced Options');
+        $.cookie('WuPhooey-Settings-adv_opts', 'closed');
       }else {
         $('#adv-opts').slideDown();
         $link.html('- Advanced Options');
+        $.cookie('WuPhooey-Settings-adv_opts', 'opened');
       }
       
       e.preventDefault();
