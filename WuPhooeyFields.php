@@ -1,6 +1,6 @@
 <?php
 
-class WufooFields {
+class WuPhooeyFields {
   
   private $fields = array();
   

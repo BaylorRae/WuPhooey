@@ -3,7 +3,7 @@
 Plugin Name: WuPhooey
 Plugin URI: http://baylorrae.com/WuPhooey
 Description: A Wufoo Form Manager for WordPress
-Version: 1.2.1
+Version: 1.3
 Author: Baylor Rae'
 Author URI: http://baylorrae.com
   
@@ -14,7 +14,7 @@ Author URI: http://baylorrae.com
 */
 
 include 'wufoo-api/WufooApiWrapper.php';
-include 'WufooFields.php';
+include 'WuPhooeyFields.php';
 include 'jg_cache.php';
 
 $wufoo_cache = new JG_Cache(dirname(__FILE__) . '/cache');
@@ -40,7 +40,40 @@ function wufoo_filter_post($atts, $content = null) {
 add_shortcode('WuPhooey', 'wufoo_filter_post');
 
 function wufoo_count_entries() {
-  // return ' <span title="Today\'s Entries" class="WuPhooey-today_entries update-plugins"><span class="plugins-count">2</span></span>';
+  $chosenForms = unserialize(get_option('WuPhooey-forms_to_count'));
+  
+  if( count($chosenForms) == 0 )
+    return '';
+  
+  if( $wrapper = wufoo_login($echo = false) ) {
+    $total = wufoo_cache_get('entryCountToday', time2seconds('1 hour'));
+    
+    if( !$total ) {
+      
+      $total = 0;
+      foreach( $chosenForms as $id => $value ) {
+        $id = str_replace('id-', '', $id);
+        
+        $total += $wrapper->getEntryCountToday($id);        
+      }
+      
+      wufoo_cache_set('entryCountToday', 'total-' . $total);
+    }    
+    
+    $total = str_replace('total-', '', $total);
+    $class = '';
+    
+    if( $total > 99 ) {
+      $total = '99+';
+      $class .= ' alot';
+    }
+    
+    if( $total != 0)
+      return ' <span title="Today\'s Entries" class="WuPhooey-today_entries update-plugins' . $class . '"><span class="plugins-count">' . $total . '</span></span>';
+     
+  }
+  
+  return '';
 }
 
 // ================
@@ -383,24 +416,36 @@ function wufoo_build_form($form, $options = null, $errors = null) {
 function wufoo_settings() {
   wufoo_header('Settings', 'Your settings have been saved!');
   
+  $forms = wufoo_cache_get('forms');
+  
   if( !get_option('WuPhooey-cache-forms') )
     add_option('WuPhooey-cache-forms', '30 minutes');
     
   if( !get_option('WuPhooey-cache-entries') )
-    add_option('WuPhooey-cache-entries', '30 minutes');
+    add_option('WuPhooey-cache-entries', '30 minutes');    
+  
+  // if( isset($_POST['WuPhooey-forms_to_count']) ) {
+  //   update_option('WuPhooey-forms_to_count', serialize($_POST['WuPhooey-forms_to_count']));
+  // }else {
+  //   update_option('WuPhooey-forms_to_count', '');
+  // }
+  
+  if( !empty($_POST) ) {
     
-  // if( !get_option('WuPhooey-cache-reports') )
-  //   add_option('WuPhooey-cache-reports', '1 week');
-    
-  // if( !get_option('WuPhooey-use-css') )
-  //   add_option('WuPhooey-use-css', 'true');
+    update_option('WuPhooey-username', $_POST['WuPhooey-username']);
+    update_option('WuPhooey-api_key', $_POST['WuPhooey-api_key']);
+    update_option('WuPhooey-cache-forms', $_POST['WuPhooey-cache-forms']);
+    update_option('WuPhooey-cache-entries', $_POST['WuPhooey-cache-entries']);
+    update_option('WuPhooey-forms_to_count', serialize($_POST['WuPhooey-forms_to_count']));
+        
+  }
     
 ?>
   
   <p>WuPhooey needs your Wufoo API-Key and subdomain to get your forms.</p>
   <p>If you need help finding your Wufoo API-Key please see the Wufoo Docs on <a target="_blank" href="http://wufoo.com/docs/api/v3/#key" title="Wufoo Docs &middot; Finding Your Key">Finding Your Key</a>.</p>
   
-  <form method="post" action="options.php">
+  <form method="post" action="<?php echo wufoo_link('settings') ?>&amp;updated=true">
     <?php wp_nonce_field('update-options'); ?>
     
     <table class="form-table wuphooey-form">
@@ -435,7 +480,7 @@ function wufoo_settings() {
         </tr>
         
         <tr valign="top" class="form-field form-required">
-          <th scope="row"><label for="caching-entries">Entries</label></th>
+          <th scope="row"><label for="caching-entries">Entries*</label></th>
           <td>
             <input type="text" id="caching-entries" name="WuPhooey-cache-entries" class="regular-text" value="<?php echo get_option('WuPhooey-cache-entries') ?>" />
           </td>
@@ -475,12 +520,43 @@ function wufoo_settings() {
         */ ?>
         
       </table>
+      
+      <?php if( $wrapper = wufoo_login($echo = false) ) : ?>
+        <h3>Count Today&#x27;s Entries</h3>
+        <p>Choose the forms you would like to have counted.</p>
+        <div id="forms-list">
+          <ul>
             
+            <?php
+            
+              if( !$forms = wufoo_cache_get('forms-tec', time2seconds('10 minutes')) ) {
+                $forms = $wrapper->getForms();
+                wufoo_cache_set('forms-tec', $forms);
+              }
+              
+              $chosenForms = unserialize(get_option('WuPhooey-forms_to_count'));
+            ?>
+            
+            <?php foreach( $forms as $id => $form ) : ?>
+              <?php $selected = (isset($chosenForms['id-' . $id])) ? ' checked="checked"' : ' '; ?>
+              <li>
+                <input<?php echo $selected ?> type="checkbox" id="WuPhooey-forms_to_count[id-<?php echo $id ?>]" name="WuPhooey-forms_to_count[id-<?php echo $id ?>]" value="selected" />
+                <label for="WuPhooey-forms_to_count[id-<?php echo $id ?>]"><?php echo $form->Name ?></label>
+              </li>
+            <?php endforeach ?>
+            
+          </ul>
+        </div>
+      <?php else : ?>
+        <h3 class="disabled">Count Today&#x27;s Entries</h3>
+        <p>This feature will be enabled after you add your Wufoo Subdomain and API Key.</p>
+      <?php endif ?>
+      
     </div>
     
     <input type="hidden" name="WuPhooey-secret_key" value="<?php echo time() ?>" />
-    <input type="hidden" name="action" value="update" />
-    <input type="hidden" name="page_options" value="WuPhooey-api_key,WuPhooey-username,WuPhooey-secret_key,WuPhooey-cache-forms,WuPhooey-cache-entries<?php /* ,WuPhooey-cache-reports,WuPhooey-use-css */ ?>" />
+    <!-- <input type="hidden" name="action" value="update" /> -->
+    <!-- <input type="hidden" name="page_options" value="WuPhooey-api_key,WuPhooey-username,WuPhooey-secret_key,WuPhooey-cache-forms,WuPhooey-cache-entries<?php /* ,WuPhooey-cache-reports,WuPhooey-use-css */ ?>" /> -->
     
     <p class="submit">
       <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /> &#8212;
@@ -490,6 +566,8 @@ function wufoo_settings() {
     </p>
     
   </form>
+  
+  <p>* This will not apply when totaling "Count Today's Entries". Today's entries update every hour.</p>
   
   <script src="<?php echo plugins_url('/js/jquery.cookie.js', __FILE__) ?>"></script>
   <script>
@@ -636,7 +714,7 @@ function wufoo_entries() {
     return wufoo_add_entry();
     
   wufoo_header('Entries');
-  $WufooFields = new WufooFields;
+  $WufooFields = new WuPhooeyFields;
     
     if( !$wrapper = wufoo_login() )
       return;
@@ -649,6 +727,18 @@ function wufoo_entries() {
       
       // Save the list of fields
       $fields = $WufooFields->store($fields);
+      
+      // Count the number of entries
+      $entryCount = count($entries);
+      
+      // Get the forms
+      $forms = wufoo_cache_get('forms');
+            
+      // Update the EntryCount
+      $forms[$_GET['entries']]->EntryCount = $entryCount;
+      
+      // Save the new information
+      wufoo_cache_set('forms', $forms);
       
       $data = wufoo_cache_set('entries-' . $_GET['entries'], array(
           'fields' => $fields,

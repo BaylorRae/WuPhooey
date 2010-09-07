@@ -123,7 +123,8 @@ class WufooApiWrapper extends WufooApiWrapperBase {
     $url = $this->getFullUrl($from.'/'.$identifier) . '?includeTodayCount=true';
     $this->curl = new WufooCurl();
     $countObject = json_decode($this->curl->getAuthenticated($url, $this->apiKey));
-    return $countObject->EntryCountToday;
+    // return $countObject->EntryCountToday;
+    return $countObject->Forms[0]->EntryCountToday;
   }
 	
 	/**

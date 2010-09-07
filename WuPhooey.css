@@ -314,3 +314,9 @@ html { height: 102%; }
 .WuPhooey-today_entries.alot {
   margin-left: 0 !important;
 }
+
+.wufoo.wrap #forms-list ul {
+  max-height: 100px;
+  overflow: auto;
+  width: 300px;
+}
