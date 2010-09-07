@@ -3,7 +3,7 @@
 Plugin Name: WuPhooey
 Plugin URI: http://baylorrae.com/WuPhooey
 Description: A Wufoo Form Manager for WordPress
-Version: 1.3
+Version: 1.3.1
 Author: Baylor Rae'
 Author URI: http://baylorrae.com
   
@@ -315,7 +315,7 @@ function wufoo_message($subject) {
       
       $('<div />', {
         id: 'popup',
-        html: '<p>Wufoo phooey uses caching. This means your items might not show up for a while.</p><p>But don&#x27;t worry. You can</p><a class="button-primary" href="#" id="reload-cache">Reload the Cache</a>'
+        html: '<p>WuPhooey uses caching. This means your items might not show up for a while.</p><p>But don&#x27;t worry. You can</p><a class="button-primary" href="#" id="reload-cache">Reload the Cache</a>'
       })
         .prepend('<a id="close-message" href="#">X</a>')
         .appendTo($('.wufoo.wrap'));
@@ -1096,12 +1096,14 @@ function wufoo_help() {
     </p>
   </div>
   
+  <?php /*
   <h3>Using the Generic Stylesheet</h3>
   <div class="help">
     <p>
       WuPhooey comes with a basic stylesheet to style forms. You don't have to use it, but it acts as a good template to work from.
     </p>
   </div>
+  */ ?>
   
   <script>
     var $ = jQuery;
