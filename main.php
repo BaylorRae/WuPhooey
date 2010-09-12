@@ -3,7 +3,7 @@
 Plugin Name: WuPhooey
 Plugin URI: http://baylorrae.com/WuPhooey
 Description: A Wufoo Form Manager for WordPress
-Version: 1.3.1
+Version: 1.4
 Author: Baylor Rae'
 Author URI: http://baylorrae.com
   
@@ -341,12 +341,16 @@ function wufoo_message($subject) {
   
 }
 
-// Builds the Wufoo form in HTML or loads the iframe
+// Loads the Wufoo form in an iframe
 function wufoo_build_form($form, $options = null, $errors = null) {
   if( !$wrapper = wufoo_login() )
     return;
-    
+        
   $option = (is_array($options)) ? (object) $options : (object) array();
+  $subdomain = get_option('WuPhooey-username');
+    
+  $autoResize = (!isset($option->autoresize)) ? 'true' : $option->autoresize;
+  $height = (!isset($option->height)) ? '514' : $option->height;
   
   /**
    * Deleted the option to not use iframe
@@ -357,7 +361,19 @@ function wufoo_build_form($form, $options = null, $errors = null) {
    */
   
   // if( isset($option->use_iframe) )
-    return '<script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src=\'" + host + "wufoo.com/scripts/embed/form.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">var ' . $form . ' = new WufooForm();' . $form . '.initialize({\'userName\':\'baylorrae\', \'formHash\':\'' . $form . '\', \'autoResize\':true});' . $form . '.display();</script>';
+    // return '<script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src=\'" + host + "wufoo.com/scripts/embed/form.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script><script type="text/javascript">var ' . $form . ' = new WufooForm();' . $form . '.initialize({\'userName\':\'baylorrae\', \'formHash\':\'' . $form . '\', \'autoResize\':true});' . $form . '.display();</script>';
+  
+  return '<script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src=\'" + host + "wufoo.com/scripts/embed/form.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script>
+
+    <script type="text/javascript">
+    var ' . $form . ' = new WufooForm();
+    ' . $form . '.initialize({
+    \'userName\':\'' . $subdomain .  '\', 
+    \'formHash\':\'' . $form . '\', 
+    \'autoResize\':' .  $autoResize . ',
+    \'height\':\'' . $height . '\'});
+    ' . $form . '.display();
+    </script>';
     
   if( (!$data = wufoo_cache_get('fields-' . $form)) || isset($_GET['reload_cache']) ) {
     $data = array();
@@ -1058,6 +1074,25 @@ function wufoo_help() {
     </dl>
   </div>
   */ ?>
+  
+  <h3>Customizing the Form</h3>
+  <div class="help">
+    <p>
+      You can adjust the embed code to help the form match your site. Such as <a target="blank" href="http://wufoo.com/2010/08/19/using-wufoo-forms-in-fixed-height-containers/">Using Wufoo Forms in Fixed Height Containers</a>
+    </p>
+    <p>
+      These are the parameters you can change.
+      <ul>
+        <li>autoResize (defaults to <em>true</em>)</li>
+        <li>height (defaults to <em>514</em>)</li>
+      </ul>
+    </p>
+    <p>
+      <h4>Example</h4>
+      <p>This example will make the form 350 pixels tall and will not automatically resize the form.</p>
+      <code>[WuPhooey id=&quot;z7x4a9&quot; autoResize=&quot;false&quot; height=&quot;350&quot;]</code>
+    </p>
+  </div>
   
   <h3>About Cacheing</h3>
   <div class="help">
