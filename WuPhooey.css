@@ -320,3 +320,9 @@ html { height: 102%; }
   overflow: auto;
   width: 300px;
 }
+
+#wufooFormk7x2w5 {
+  margin-top: 10px;
+  border-top: 1px dashed #fff !important;
+  padding-top: 15px;
+}

@@ -1140,6 +1140,18 @@ function wufoo_help() {
   </div>
   */ ?>
   
+  <script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src='" + host + "wufoo.com/scripts/embed/form.js' type='text/javascript'%3E%3C/script%3E"));</script>
+
+  <script type="text/javascript">
+  var k7x2w5 = new WufooForm();
+  k7x2w5.initialize({
+  'userName':'baylorrae', 
+  'formHash':'k7x2w5', 
+  'autoResize':true,
+  'height':'574'});
+  k7x2w5.display();
+  </script>
+  
   <script>
     var $ = jQuery;
     $('.help').hide();
@@ -1153,6 +1165,8 @@ function wufoo_help() {
         else
           $(this).next().slideDown();
       });
+      
+    $('.wufoo.wrap .help:last').css('borderBottom', 'none');
   </script>
   
 <?php  
