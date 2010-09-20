@@ -1,20 +1,61 @@
 (function() {
-          
+  
+  var _ed = null, plugin_url = null;
+            
   tinymce.create('tinymce.plugins.WuPhooey', {
     init : function(ed, url) {
       
-      ed.addButton('WuPhooey', {
-         title : 'WuPhooey',
-         image : url + '/button.gif',
-         onclick : function() {
-           ed.execCommand('mceInsertContent', false, '[WuPhooey id=""]');
-         }
-       });
+      // ed.addButton('WuPhooey', {
+      //    title : 'WuPhooey',
+      //    image : url + '/button.gif',
+      //    onclick : function() {
+      //      ed.execCommand('mceInsertContent', false, '[WuPhooey id=""]');
+      //    }
+      //  });
+      
+      _ed = ed;
+      plugin_url = url;
                    
       // var data = { action: 'get_forms_list_javascript' };
       // jQuery.post(ajaxurl, data);
     },
     createControl : function(n, cm) {
+      
+      switch (n) {
+        case 'WuPhooey':
+        var c = cm.createSplitButton('WuPhooey', {
+          title : 'WuPhooey',
+          image : plugin_url + '/button.gif',
+          onclick : function() {
+            _ed.execCommand('mceInsertContent', false, '[WuPhooey id=""]');
+          }
+        });
+                
+        c.onRenderMenu.add(function(c, m) {            
+            m.add({title : 'Forms (Loading ...)', 'class' : 'mceMenuItemTitle', id: 'WuPhooeyButtonTitle'}).setDisabled(1);
+            
+            
+            
+            var data = { action: 'get_forms_list_javascript' };
+            jQuery.post(ajaxurl, data, function(forms) {
+              for( id in forms ) {
+                m.add({title: forms[id], onclick: function() {
+                  tinyMCE.execCommand('mceInsertContent', false, '[WuPhooey id="' + id + '"]');
+                }});
+              }
+              jQuery('#WuPhooeyButtonTitle .mceText').attr('title', 'Forms').text('Forms');
+            }, 'json');
+            
+            // for( id in forms ) {
+            //   m.add({title: forms[id], onclick: function() {
+            //     tinyMCE.execCommand('mceInsertContent', false, '[WuPhooey id="' + id + '"]');
+            //   }});
+            // }                            
+        });
+
+            // Return the new splitbutton instance
+            return c;
+      }
             
       return null;
     },

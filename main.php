@@ -138,10 +138,7 @@ function add_WuPhooey_tinymce_plugin($plugin_array) {
   if( !$wrapper = wufoo_login($echo = false) )
     return;
   
-  if( !$forms = wufoo_cache_get('forms') )
-    $plugin_array['WuPhooey'] = plugins_url('/tinymce-plugin/WuPhooey.js', __FILE__);
-  else
-    $plugin_array['WuPhooey'] = plugins_url('/tinymce-plugin/WuPhooey-adv.js', __FILE__);
+  $plugin_array['WuPhooey'] = plugins_url('/tinymce-plugin/WuPhooey.js', __FILE__);
   
   return $plugin_array;
 }
