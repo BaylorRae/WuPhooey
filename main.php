@@ -1047,8 +1047,6 @@ function wufoo_help() {
     <p>
       <img src="<?php echo plugins_url('/images/help-1.jpg', __FILE__) ?>" width="128" height="78" alt="Help 1" />
       When editing a post or page, click on the arrow next to the Wufoo icon and choose your form.
-      <br /><br />
-      If you don't see the arrow, go to the forms page and after the page loads, go back and try creating your post/page.
     </p>
     <p>
       If you are using the HTML editor, you will need to add this tag.<br />
