@@ -135,13 +135,45 @@ function register_WuPhooey_button($buttons) {
  
 // Load the TinyMCE plugin : editor_plugin.js (wp2.5)
 function add_WuPhooey_tinymce_plugin($plugin_array) {
-   $plugin_array['WuPhooey'] = plugins_url('/tinymce-plugin/WuPhooey.php', __FILE__);
-   return $plugin_array;
+  if( !$wrapper = wufoo_login($echo = false) )
+    return;
+  
+  if( !$forms = wufoo_cache_get('forms') )
+    $plugin_array['WuPhooey'] = plugins_url('/tinymce-plugin/WuPhooey.js', __FILE__);
+  else
+    $plugin_array['WuPhooey'] = plugins_url('/tinymce-plugin/WuPhooey-adv.js', __FILE__);
+  
+  return $plugin_array;
 }
  
 function my_refresh_mce($ver) {
   $ver += 3;
   return $ver;
+}
+
+// Ajax for the button
+add_action('wp_ajax_get_forms_list_javascript', 'return_forms_list');
+function return_forms_list() {
+  $wrapper = wufoo_login($echo = false);
+  
+  
+  if( !$forms = wufoo_cache_get('forms') ) {
+    $forms = $wrapper->getForms();
+    foreach( $forms as $id => $form ) {
+      $forms[$id]->EntryCount = $wrapper->getEntryCount($id);
+    }
+    wufoo_cache_set('forms', $forms);
+  }
+  
+  $output = array();
+  
+  foreach( $forms as $id => $form ) {
+    $output[$id] = $form->Name;
+  }
+  
+  echo json_encode($output);
+  
+  die();
 }
 
 // init process for button control
@@ -519,7 +551,7 @@ function wufoo_settings() {
         <tr valign="top" class="form-field">
           <th scope="row" style="width: 20px;"></th>
           <td>
-            <a class="button" href="<?php echo plugins_url('/clear_cache.php', __FILE__) ?>">Clear Cache</a>
+            <a class="button" href="<?php echo plugins_url('/clear_cache.php', __FILE__) ?>?url=<?php echo urlencode($_SERVER['REQUEST_URI']) ?>">Clear Cache</a>
             <p style="color: #fff; text-shadow: 0 1px 0 #000">This will empty the cache folder. Clearing used disk space.</p>
           </td>
         </tr>
@@ -1018,6 +1050,8 @@ function wufoo_help() {
     <p>
       <img src="<?php echo plugins_url('/images/help-1.jpg', __FILE__) ?>" width="128" height="78" alt="Help 1" />
       When editing a post or page, click on the arrow next to the Wufoo icon and choose your form.
+      <br /><br />
+      If you don't see the arrow, go to the forms page and after the page loads, go back and try creating your post/page.
     </p>
     <p>
       If you are using the HTML editor, you will need to add this tag.<br />

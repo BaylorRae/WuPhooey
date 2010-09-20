@@ -8,6 +8,6 @@ foreach(glob($dir) as $file)   {
     unlink($file);
 }
 
-header('Location: /wp-admin/admin.php?page=WuPhooey');
+header('Location: ' . $_GET['url']);
 
 ?>
