@@ -1,6 +1,12 @@
 (function() {
   
   var _ed = null, plugin_url = null;
+  
+  function addButton(m, title, id) {
+    m.add({title: title, onclick: function() {
+      _ed.execCommand('mceInsertContent', false, '[WuPhooey id="'+id+'"]');
+    }});
+  }
             
   tinymce.create('tinymce.plugins.WuPhooey', {
     init : function(ed, url) {
@@ -33,24 +39,16 @@
                 
         c.onRenderMenu.add(function(c, m) {            
             m.add({title : 'Forms (Loading ...)', 'class' : 'mceMenuItemTitle', id: 'WuPhooeyButtonTitle'}).setDisabled(1);
-            
-            
-            
+                        
             var data = { action: 'get_forms_list_javascript' };
             jQuery.post(ajaxurl, data, function(forms) {
+              
               for( id in forms ) {
-                m.add({title: forms[id], onclick: function() {
-                  tinyMCE.execCommand('mceInsertContent', false, '[WuPhooey id="' + id + '"]');
-                }});
+                addButton(m, forms[id], id);
               }
+              
               jQuery('#WuPhooeyButtonTitle .mceText').attr('title', 'Forms').text('Forms');
-            }, 'json');
-            
-            // for( id in forms ) {
-            //   m.add({title: forms[id], onclick: function() {
-            //     tinyMCE.execCommand('mceInsertContent', false, '[WuPhooey id="' + id + '"]');
-            //   }});
-            // }                            
+            }, 'json');                           
         });
 
             // Return the new splitbutton instance
