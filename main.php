@@ -3,7 +3,7 @@
 Plugin Name: WuPhooey
 Plugin URI: http://baylorrae.com/WuPhooey
 Description: A Wufoo Form Manager for WordPress
-Version: 1.4.2
+Version: 1.4.3
 Author: Baylor Rae'
 Author URI: http://baylorrae.com
   
@@ -688,9 +688,6 @@ function wufoo_forms() {
   
   if( (!$forms = wufoo_cache_get('forms')) || isset($_GET['reload_cache']) ) {
     $forms = $wrapper->getForms();
-    foreach( $forms as $id => $form ) {
-      $forms[$id]->EntryCount = $wrapper->getEntryCount($id);
-    }
     wufoo_cache_set('forms', $forms);
   }
     
@@ -719,7 +716,7 @@ function wufoo_forms() {
             <td class="form-description"><?php echo stripslashes($form->Description) ?></td>
             <td class="form-email"><?php echo stripslashes($form->Email) ?></td>
             <td class="form-actions">
-              <a href="<?php echo wufoo_link('forms') ?>&amp;entries=<?php echo $id ?>">Entries</a> (<?php echo $form->EntryCount; ?>) |
+              <a href="<?php echo wufoo_link('forms') ?>&amp;entries=<?php echo $id ?>">Entries</a> |
               <a target="_blank" href="http://<?php echo get_option('WuPhooey-username') ?>.wufoo.com/build/<?php echo $form->Url ?>">Edit on Wufoo!</a>
             </td>
           </tr> 
@@ -772,18 +769,6 @@ function wufoo_entries() {
       
       // Save the list of fields
       $fields = $WufooFields->store($fields);
-      
-      // Count the number of entries
-      $entryCount = count($entries);
-      
-      // Get the forms
-      $forms = wufoo_cache_get('forms');
-            
-      // Update the EntryCount
-      $forms[$_GET['entries']]->EntryCount = $entryCount;
-      
-      // Save the new information
-      wufoo_cache_set('forms', $forms);
       
       $data = wufoo_cache_set('entries-' . $_GET['entries'], array(
           'fields' => $fields,
@@ -1055,54 +1040,17 @@ function wufoo_help() {
     </p>
   </div>
   
-  <?php /*
-  <h3>Customizing the form</h3>
+  <h3>WuPhooey is Mega Slow</h3>  
   <div class="help">
     <p>
-      There are a couple of options that you can use to customize your form.<br />
-      Usage:<br />
-      <code>[WuPhooey id=&quot;form_id&quot; option_name=&quot;option_value&quot;]</code>
+      If WuPhooey is running slow, even with cacheing. You may need to make sure WuPhooey can write to the
+      <br /><code>wp-content/plugins/WuPhooey/cache</code> folder.
+      <br />I recommend "755"
     </p>
-    
-    <h4 style="margin-bottom: 2px">Options</h4>
-    <dl>
-      
-      <dt>use_iframe ( true/false )</dt>
-      <dd>
-        This will load the Wufoo iFrame instead of rendering the form in HTML.<br />
-        If you use this, the options below won't be used.
-        <span class="default">( defaults to: <em>false</em> )</span>
-      </dd>
-      
-      <dt>submit_class</dt>
-      <dd>
-        The class name to add to the submit button
-        <span class="default">( defaults to: <em>button-primary</em> )</span>
-      </dd>
-      
-      <dt>cancel_link</dt>
-      <dd>
-        This will add a cancel link just after the submit button. It requires you to add <code>cancel_location</code><br />
-        You can add your own text for the cancel link
-        <code>cancel_link="New Cancel Text"</code>
-        <span class="default">( defaults to: <em>false</em> )</span>
-      </dd>
-      
-      <dt>cancel_location</dt>
-      <dd>
-        Where to go when the cancel link is clicked.
-        <span class="default">( only used with <em>cancel_link</em> )</span>
-      </dd>
-      
-      <dt>cancel_class</dt>
-      <dd>
-        The class name to add to the cancel link
-        <span class="default">( defaults to <em>button</em> )</span>
-      </dd>
-      
-    </dl>
+    <p>
+      Incase your wondering how to do that, WordPress has a great article on <a target="_blank" href="http://codex.wordpress.org/Changing_File_Permissions">Changing File Permissions</a>.
+    </p>
   </div>
-  */ ?>
   
   <h3>Customizing the Form</h3>
   <div class="help">
@@ -1149,7 +1097,7 @@ function wufoo_help() {
       <code>1 hour 30 minutes</code>
     </p>
   </div>
-  
+    
   <h3>Clearing the Cache</h3>
   <div class="help">
     <p>
@@ -1159,16 +1107,7 @@ function wufoo_help() {
       While these files won't take up a lot of space, it's just good house cleaning to remove those files every once and a while.
     </p>
   </div>
-  
-  <?php /*
-  <h3>Using the Generic Stylesheet</h3>
-  <div class="help">
-    <p>
-      WuPhooey comes with a basic stylesheet to style forms. You don't have to use it, but it acts as a good template to work from.
-    </p>
-  </div>
-  */ ?>
-  
+    
   <script type="text/javascript">var host = (("https:" == document.location.protocol) ? "https://secure." : "http://");document.write(unescape("%3Cscript src='" + host + "wufoo.com/scripts/embed/form.js' type='text/javascript'%3E%3C/script%3E"));</script>
 
   <script type="text/javascript">
