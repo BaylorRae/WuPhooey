@@ -326,3 +326,31 @@ html { height: 102%; }
   border-top: 1px dashed #fff !important;
   padding-top: 15px;
 }
+
+.wufoo.wrap .pager-nav {
+  list-style: none;
+  float: right;
+}
+
+.wufoo.wrap .pager-nav li {
+  display: inline;
+}
+
+.wufoo.wrap .pager-nav a {
+  background: #FFE16E;
+  color: #1F537F;
+  text-shadow: none;
+  padding: 1px 4px;
+  margin-right: 5px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.wufoo.wrap .pager-nav a:hover {
+  background: #FFEE91;
+}
+
+.wufoo.wrap .pager-nav a.current {
+  background: ;
+}

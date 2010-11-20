@@ -988,6 +988,58 @@ function wufoo_entries() {
       e.preventDefault();
     });
     
+    $.fn.pager = function(options) {
+      
+      options = $.extend({
+        perPage: 3,
+        items: 'tr',
+        navigation: '#pager-nav'
+      }, options);
+      
+      return $(this).each(function() {
+        var rows = $(this).find(options.items),
+            nav = $(options.navigation), page = 0;
+            
+        // Show the first page
+        if( page = window.location.hash.match(/page-(\d+)/) ) {
+          var offset = (page[1] - 1) * options.perPage;
+          rows.hide().slice(offset, offset+options.perPage).show();
+        }else
+          rows.hide().slice(0, options.perPage).show();
+        
+        // Create the navigation
+        for( var i = 0, len = Math.ceil(rows.length / options.perPage); i < len; i++ ) {
+          nav.append('<li><a href="#page-' + (i + 1) + '">' + (i + 1) + '</a></li>');
+        }
+        
+        // "Activate" the navigation
+        nav.find('a').click(function(e) {
+          var num = $(this).text() - 1;
+          
+          var offset = num * options.perPage;
+          
+          rows.hide().slice(offset, offset+options.perPage).show();
+          
+          nav.find('a').removeClass('current');
+          $('a:contains(' + $(this).text() + ')', nav).addClass('current');
+        });
+        
+      });
+      
+    };
+    
+    // Paging
+    var numEntries = 3,
+        rows = $('table.entries tbody tr'),
+        length;
+        
+    $('.submit').append('<ul class="pager-nav"><li>Page: </li></ul>');
+        
+    $('table.entries tbody').pager({
+      perPage: 3,
+      navigation: '.pager-nav'
+    });
+    
   </script>
   
 <?php
