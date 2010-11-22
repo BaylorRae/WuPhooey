@@ -330,6 +330,7 @@ html { height: 102%; }
 .wufoo.wrap .pager-nav {
   list-style: none;
   float: right;
+  margin-top: 4px;
 }
 
 .wufoo.wrap .pager-nav li {
@@ -354,3 +355,5 @@ html { height: 102%; }
 .wufoo.wrap .pager-nav a.current {
   background: ;
 }
+
+.wufoo.wrap #pager-amount { float: right; }

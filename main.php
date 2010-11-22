@@ -998,7 +998,7 @@ function wufoo_entries() {
       
       return $(this).each(function() {
         var rows = $(this).find(options.items),
-            nav = $(options.navigation), page = 0;
+            nav = $(options.navigation).hide(), page = 0;
             
         // Show the first page
         if( page = window.location.hash.match(/page-(\d+)/) ) {
@@ -1008,8 +1008,12 @@ function wufoo_entries() {
           rows.hide().slice(0, options.perPage).show();
         
         // Create the navigation
-        for( var i = 0, len = Math.ceil(rows.length / options.perPage); i < len; i++ ) {
-          nav.append('<li><a href="#page-' + (i + 1) + '">' + (i + 1) + '</a></li>');
+        if( Math.ceil(rows.length / options.perPage) > 1 ) {
+          nav.show();
+          
+          for( var i = 0, len = Math.ceil(rows.length / options.perPage); i < len; i++ ) {
+            nav.append('<li><a href="#page-' + (i + 1) + '">' + (i + 1) + '</a></li>');
+          }
         }
         
         // "Activate" the navigation
@@ -1033,12 +1037,30 @@ function wufoo_entries() {
         rows = $('table.entries tbody tr'),
         length;
         
-    $('.submit').append('<ul class="pager-nav"><li>Page: </li></ul>');
-        
+    $('.submit').append('<select id="pager-amount"><option value="3">3</option><option value="5">5</option><option value="10">10</option><option value="25">25</option><option value="50">50</option></select><ul class="pager-nav"><li>Page: </li></ul>');
+            
     $('table.entries tbody').pager({
       perPage: 3,
       navigation: '.pager-nav'
     });
+    
+    $('#pager-amount').change(function() {
+      var amount = $(this).val();
+      
+      $.cookie('WuPhooey-entries-count', amount);
+      
+      $('.pager-nav').find('li').filter(':not(:first-child)').remove();
+      
+      $('table.entries tbody').pager({
+        perPage: amount,
+        navigation: '.pager-nav'
+      });
+    });
+    
+    if( $.cookie('WuPhooey-entries-count') ) {
+      var amount = $.cookie('WuPhooey-entries-count');
+      $('#pager-amount').val(amount).change();
+    }
     
   </script>
   
