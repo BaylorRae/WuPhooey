@@ -3,7 +3,7 @@
 Plugin Name: WuPhooey
 Plugin URI: http://baylorrae.com/WuPhooey
 Description: A Wufoo Form Manager for WordPress
-Version: 1.4.4
+Version: 1.4.4.1
 Author: Baylor Rae'
 Author URI: http://baylorrae.com
   

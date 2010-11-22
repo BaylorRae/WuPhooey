@@ -339,9 +339,10 @@ html { height: 102%; }
 
 .wufoo.wrap .pager-nav a {
   background: #FFE16E;
+  border: 1px solid #FFE16E;
   color: #1F537F;
   text-shadow: none;
-  padding: 1px 4px;
+  padding: 0px 3px;
   margin-right: 5px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -353,7 +354,8 @@ html { height: 102%; }
 }
 
 .wufoo.wrap .pager-nav a.current {
-  background: ;
+  background: #236399;
+  color: #FFE16E;
 }
 
 .wufoo.wrap #pager-amount { float: right; }
